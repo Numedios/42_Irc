@@ -72,7 +72,7 @@ void Serveur::run()
                     }
                     if (bytesReceived <= 0)
                          handleClientDisconnect(i);
-                    //displayHistory();
+                    displayHistory();
                 }
             }
        }
