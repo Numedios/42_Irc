@@ -1,5 +1,22 @@
 #include "../include/Serveur.hpp"
 
+void joinChannel(Channel& channel, Client& client, Serveur& serveur)
+{
+    channel.addClient(&client);
+
+    std::string name = channel.getChannelName();
+    std::string response;
+
+    response = client.returnPrefixe() + RPL_NAMREPLY(name, client.getNick(), channel.sendAllClientsNames()) + "\r\n";
+    sendResponse(client, serveur, response);
+
+    response = client.returnPrefixe() + RPL_ENDOFNAMES(name, client.getNick()) + "\r\n";
+    sendResponse(client, serveur, response);
+
+    response = client.returnPrefixe() + "JOIN " + name + "\r\n";
+    sendResponse(client, serveur, response);
+}
+
 void createChannel(const std::string& name, Client& client, Serveur& serveur)
 {
     Channel channel = Channel(name);
@@ -35,7 +52,7 @@ int handleJoin(const std::string& line, Client& client, Serveur& serveur)
     {
 
         std::cout << client.getNick() << " join channel :" << name << std::endl;
-        // joinChannel(channel , client, serveur);
+        joinChannel(serveur.getChannel(name) , client, serveur);
         return (1);
     }
     std::cout << client.getNick() << " create new channel :" << name << std::endl;

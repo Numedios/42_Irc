@@ -19,3 +19,22 @@ std::string convertIntToString(int value)
     ss << value;
     return ss.str();
 }
+
+std::vector<std::string> createArg(const std::string& line)
+{
+    std::istringstream iss(line);
+    std::vector<std::string> res;
+    std::string word;
+
+    while (iss >> word)
+        res.push_back(word);
+    return (res);
+}
+
+
+void printVector(std::vector<std::string>& vec) {
+    for (size_t i = 0; i < vec.size(); i++) {
+        std::cout << vec[i] << " ";
+    }
+    std::cout << std::endl;
+}

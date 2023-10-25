@@ -38,141 +38,211 @@ int handleCapLS(const std::string& line, Client& client, Serveur& serveur)
             return (1);
         }
         serveur.addHistoryChat(create_message(client, ":-->   ", response));
-        // ssize_t bytesSent = send(client.getSocket(), response.c_str(), response.size(), 0);
-        // if (bytesSent == -1) 
-        //     std::cout << "failure" << std::endl;
-        // else
-        //     std::cout << "success" << std::endl;
         client.setAuthState(Client::CapLs);
     }
     return (0);
 }
 
-
-
 int handlePass(const std::string& line, Client& client, Serveur& serveur)
-{
-    if (client.getAuthState() == Client::CapLs) {
-        std::istringstream iss(line);
-        std::string word;
-        std::string target = "PASS";
+{  
+    std::vector<std::string> args = createArg(line);
 
-        while (iss >> word) {
-            if (word == target) {
-                if (iss >> word) {
-                    if (word == serveur.getPassword())
-                    {
-                        //std::cout << "pass VALID" << std::endl;
-                    }
-                    else 
-                    {
-                        std::cout << "Error : pass INVALID" << std::endl;
-                        std::string response = "ERROR :Password incorrect. Closing connection.\r\n";
-                        sendResponse(client, serveur, response);
-                        client.setDisconnected();
-                        client.setAuthState(Client::NotAuthenticated);
-                        return 1;
-                    }
-                }
-            }
-        }
-        client.setAuthState(Client::Pass);
+    if (client.isAuthenticated()  == true || client.getAuthState() != Client::CapLs)
+    {
+        std::string response = client.returnPrefixe() + ERR_ALREADYREGISTRED() + "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
     }
+
+    if (args.size() < 2) 
+    {
+        std::string response = client.returnPrefixe() + ERR_NEEDMOREPARAMS(args[0]) + "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
+    } 
+
+    if (args[1] != serveur.getPassword())
+    {
+        std::cout << "Error : pass INVALID" << std::endl;
+        std::string response = client.returnPrefixe() + ERR_PASSWDMISMATCH() + "\r\n";
+        sendResponse(client, serveur, response);
+        client.setDisconnected();
+        client.setAuthState(Client::NotAuthenticated);
+        return 1;
+    }
+    client.setAuthState(Client::Pass);
+
     return (0);
 }
 
+// special = %x5B-60 / %x7B-7D ; "[", "]", "\", "`", "_", "^", "{", "|", "}"
+bool	isSpecial(char c) {
+	if (c == '[' || c == ']' || c == '\\' || c == '`'
+		|| c == '_' || c == '^' || c == '{' || c == '|' || c == '}')
+		return true;
 
+	return false;
+}
+
+// letter = %x41-5A / %x61-7A ; A-Z / a-z
+bool	isLetter(char c) {
+	if (c >= 'A' && c <= 'Z')
+		return true;
+
+	if (c >= 'a' && c <= 'z')
+		return true;
+
+	return false;
+}
+
+// digit = %x30-39 ; 0-9
+bool	isDigit(char c) {
+	if (c >= '0' && c <= '9')
+		return true;
+
+	return false;
+}
+
+static bool	isNicknameProperlyFormatted(std::string nickname) {
+	size_t	i = 0;
+
+	if (nickname.size() > 9)
+		return false;
+
+	while (i < nickname.size()) {
+		if (i < 8) {
+			if (!isLetter(nickname[i]) && !isSpecial(nickname[i]))
+				return false;
+		}
+		else
+			if (!isLetter(nickname[i]) && !isDigit(nickname[i])
+				&& !isSpecial(nickname[i]) && nickname[i] != '-')
+				return false;
+
+		i++;
+	}
+	return true;
+}
+
+static bool	isNicknameAlreadyInUse(Serveur& server, std::string nickname) {
+	std::map<int, Client*>::iterator it = server.getClients().begin();
+
+	for (; it != server.getClients().end(); it++)
+    {
+		if (it->second->getNick() == nickname)
+        {
+			return true;
+        }
+    }
+	return false;
+}
 
 int handleNick(const std::string& line, Client& client, Serveur& serveur) 
 {
-    std::cout << "" << std::endl;
-    if (client.getAuthState() == Client::Pass) {
-        std::istringstream iss(line);
-        std::string word;
-        std::string target = "NICK";
+    std::vector<std::string> args = createArg(line);
 
-        while (iss >> word) {
-            if (word == target) {
-                if (iss >> word) {
-                    bool nickTaken = false;
-                    std::map<int , Client *> clients = serveur.getClients();
-
-
-                    for (size_t i = 1; i < clients.size(); ++i) {
-                        Client* otherClient = clients[i];
-                        if (otherClient != &client && otherClient->getNick() == word) {
-                            std::string response = ":Server ERROR : Nickname is already in use. Please choose another nickname.\r\n";
-                            sendResponse(client, serveur, response);
-                            // Fermez la connexion du client
-                            client.setAuthState(Client::NotAuthenticated); // sa se discute
-                            client.setDisconnected();
-                            nickTaken = true;
-                            break;
-                        }
-                    }
-                    if (nickTaken) {
-                        client.setAuthState(Client::NotAuthenticated);
-                        return 1;
-                    }
-                    std::string response = ": NICK :" + word + "\r\n";
-                    client.setNick(word);
-                    sendResponse(client, serveur, response);
-                    serveur.addHistoryChat(create_message(client, ":SERVER", client.getNick() + "(" +  convertIntToString(client.getSocket()) + ")" + " has been connected.\n"));
-                    client.setAuthState(Client::Nick);
-                    return 0;
-                }
-            }
-        }
-        std::cout << "No nickname found after 'NICK'.";
+    if (client.isAuthenticated()  == true || client.getAuthState() != Client::Pass)
+    {
+        std::string response = client.returnPrefixe() + ERR_ALREADYREGISTRED() + "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
     }
+    if (args.size() < 2) 
+    {
+        std::string response = client.returnPrefixe() + ERR_NEEDMOREPARAMS(args[0]) + "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
+    } 
+    std::string nickname = args[1];
+	if (!isNicknameProperlyFormatted(nickname))
+    {
+        std::string response = client.returnPrefixe() + ERR_ERRONEUSNICKNAME(nickname) + "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
+    }
+    if (isNicknameAlreadyInUse(serveur, nickname)) {
+        std::string response = client.returnPrefixe() + ERR_NICKNAMEINUSE(nickname) + "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
+	}
+    std::string response = ": NICK :" + args[1] + "\r\n";
+    client.setNick(args[1]);
+    sendResponse(client, serveur, response);
+    serveur.addHistoryChat(create_message(client, ":SERVER", client.getNick() + "(" +  convertIntToString(client.getSocket()) + ")" + " has been connected.\n"));
+    client.setAuthState(Client::Nick);
     return 0;
+   
 }
 
+// int handleNick(const std::string& line, Client& client, Serveur& serveur) 
+// {
+//     if (client.getAuthState() == Client::Pass) {
+//         std::istringstream iss(line);
+//         std::string word;
+//         std::string target = "NICK";
+//         while (iss >> word) {
+//             if (word == target) {
+//                 if (iss >> word) {
+//                     bool nickTaken = false;
+//                     std::map<int , Client *> clients = serveur.getClients();
 
+//                     for (size_t i = 1; i < clients.size(); ++i) {
+//                         Client* otherClient = serveur.getClient(serveur.getFdsSocket(i));
+//                         if (otherClient != &client && otherClient->getNick() == word) {
+//                             std::string response = ":Server ERROR : Nickname is already in use. Please choose another nickname.\r\n";
+//                             sendResponse(client, serveur, response);
+//                             // Fermez la connexion du client
+//                             client.setAuthState(Client::NotAuthenticated); // sa se discute
+//                             client.setDisconnected();
+//                             nickTaken = true;
+//                             break;
+//                         }
+//                     }
+//                     if (nickTaken) {
+//                         client.setAuthState(Client::NotAuthenticated);
+//                         return 1;
+//                     }
+//                     std::string response = ": NICK :" + word + "\r\n";
+//                     client.setNick(word);
+//                     sendResponse(client, serveur, response);
+//                     serveur.addHistoryChat(create_message(client, ":SERVER", client.getNick() + "(" +  convertIntToString(client.getSocket()) + ")" + " has been connected.\n"));
+//                     client.setAuthState(Client::Nick);
+//                     return 0;
+//                 }
+//             }
+//         }
+//         std::cout << "No nickname found after 'NICK'.";
+//     }
+//     return 0;
+// }
 
-
-std::string extractUsername(const std::string& line) {
-    size_t userPos = line.find("USER");
-    if (userPos != std::string::npos) {
-        size_t afterUserPos = line.find_first_not_of(" ", userPos + 4);
-        if (afterUserPos != std::string::npos) {
-            size_t endWordPos = line.find_first_of(" \r\n\0", afterUserPos);
-            if (endWordPos == std::string::npos) {
-                endWordPos = line.size();
-            }
-            return line.substr(afterUserPos, endWordPos - afterUserPos);
-        }
-    }
-    return ""; // Return an empty string if USER information is not found
-}
 
 int handleUser(const std::string& line, Client& client, Serveur& serveur) {
-    if (client.getAuthState() == Client::Nick) {
-        size_t userPos = line.find("USER");
-        if (userPos != std::string::npos) {
-            size_t afterUserPos = line.find_first_not_of(" ", userPos + 4);
-            if (afterUserPos != std::string::npos) {
-                size_t endWordPos = line.find_first_of("\r\n\0", afterUserPos);
-                if (endWordPos == std::string::npos) {
-                    endWordPos = line.size();
-                }
-                std::string word = client.getNick();
-                std::string userName = extractUsername(line);
-                client.setUserName(userName);
-                std::string response = client.returnPrefixe() + RPL_WELCOME(word, userName, "@127.0.0.1") + "\r\n";
-                sendResponse(client, serveur, response);
-            }
-        } else {
-            std::cout << "No 'USER' found in the line." << std::endl;
-            std::string response = ":Server ERROR : No USER information provided. Please provide valid USER information.\r\n";
-            sendResponse(client, serveur, response);
-            return 0;
-        }
+    std::vector<std::string> args = createArg(line);
+
+
+    if (client.isAuthenticated()  == true || client.getAuthState() != Client::Nick)
+    {
+        std::string response = client.returnPrefixe() + ERR_ALREADYREGISTRED() + "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
+    }
+
+    if (args.size() < 5) 
+    {
+        std::string response = client.returnPrefixe() + ERR_NEEDMOREPARAMS(args[0]) + "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
+    } 
+        client.setUserName(args[1]);
+        std::string response = client.returnPrefixe() + RPL_WELCOME(client.getNick(), args[1], "127.0.0.1") + "\r\n";
+        sendResponse(client, serveur, response);
+
         client.setAuthState(Client::Authenticated);
         client.setAuthenticated(true);
-    }
     return 0;
 }
+
 
 void fillCommandMapAuth(std::map<std::string, FunctionPtr>& commands)
 {

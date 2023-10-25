@@ -1,6 +1,7 @@
 #include "../include/Serveur.hpp"
 
 int handleMode(const std::string& line, Client& client, Serveur& serveur);
+int handleKick(const std::string& line, Client& client, Serveur& serveur);
 
 int handlePing(const std::string& line, Client& client, Serveur& serveur) 
 {
@@ -17,5 +18,5 @@ void fillCommandMap(std::map<std::string, FunctionPtr>& commands)
     commands["JOIN"] = handleJoin;
     commands["PING"] = handlePing;
     commands["MODE"] = handleMode;
-    // commands["KICK"] = handleKick;
+    commands["KICK"] = handleKick;
 }

@@ -12,6 +12,11 @@ class Channel {
 public:
     Channel() : _name("") {}
     Channel(const std::string& name) : _name(name) {}
+    std::string sendClientName(const Client& users);
+    std::string sendAllClientsNames();
+    int checkIfClientInChannel(Client* client);
+    int checkIfClientInChannel(std::string client);
+    void kickClient(std::string client);
 
     std::string& getChannelName(){
         return _name;
@@ -27,13 +32,6 @@ public:
 
     void addClient(Client *client){
         _clients[client->getSocket()] = client;
-    }
-
-    std::string sendClientName(const Client& users)
-    {
-        if (_operator->getNick() == users.getNick())
-            return ("@" + users.getNick());
-        return (users.getNick());
     }
 
 

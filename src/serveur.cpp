@@ -12,6 +12,8 @@ Serveur::Serveur(int port, char *password) : _port(port), _password(password)
     _serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (_serverSocket == -1) {
         std::cerr << "Error creating socket" << std::endl;
+        perror("socket");
+        exit(EXIT_FAILURE);
         return;
     }
 
@@ -31,7 +33,8 @@ Serveur::Serveur(int port, char *password) : _port(port), _password(password)
     if (listen(_serverSocket, MAX_CLIENTS) == -1) {
         std::cerr << "Error listening" << std::endl;
         close(_serverSocket);
-        return;
+        perror("listen");
+        exit(EXIT_FAILURE);
     }
 
     fds[0].fd = _serverSocket;
@@ -65,14 +68,16 @@ void Serveur::run()
                 {
                     int bytesReceived = processReceivedData(i);
                     if (_clients[fds[i].fd]->isAuthenticated() == false) //gestion commande authentification
+                    {
                         processAuthenticationManagement(i);
+                    }
                     else // gestion commande non lier a l'authentification
                     {
                         processCommandManagement(i);
                     }
                     if (bytesReceived <= 0)
-                         handleClientDisconnect(i);
-                    displayHistory();
+                        handleClientDisconnect(i);
+                    //displayHistory();
                 }
             }
        }
@@ -82,6 +87,11 @@ void Serveur::run()
 int Serveur::acceptClient()
 {
     int clientSocket = accept(_serverSocket , NULL, NULL);
+    if (clientSocket == -1)
+    {
+        perror("accept");
+        exit(1);
+    }
     int numClients = _numClients;
     if (numClients> MAX_CLIENTS)
     {

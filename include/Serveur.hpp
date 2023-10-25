@@ -6,9 +6,10 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <poll.h>
-#include <cstring>
 #include <unistd.h>
+#include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <queue>
 #include <typeinfo>
 #include <map>
@@ -29,7 +30,8 @@ std::string convertIntToString(int value) ;
 std::string create_message(Client client, std::string capted, std::string message);
 void sendResponse(Client& client, Serveur& server, const std::string& response);
 std::string convertIntToString(int value);
-
+std::vector<std::string> createArg(const std::string& line);
+void printVector(std::vector<std::string>& vec);
 int handleJoin(const std::string& line, Client& client, Serveur& serveur);
 
 class Client;
@@ -66,12 +68,22 @@ public:
         return _password;
     }
 
-    std::map<int , Client *>  getClients(){
+    std::map<int , Client *>&  getClients(){
         return _clients;
     }
 
-    Client* getClient(int i){
-        return _clients[i];
+    Client* getClient(int fd){
+        return _clients[fd];
+    }
+
+    Client* getClient(std::string name){
+        std::map<int , Client *>::iterator it = _clients.begin();
+        for(; it != _clients.end(); it++)
+        {
+            if (it->second->getNick() == name)
+                return (it->second);
+        }
+        return (NULL);
     }
 
     std::map<std::string, FunctionPtr>&  getCommands()
@@ -81,6 +93,11 @@ public:
 
     std::map<std::string, FunctionPtr>& getAuth(){
         return _auth;
+    }
+
+    Channel& getChannel(std::string name)
+    {
+        return _channels[name];
     }
 
     std::map<std::string, Channel>& getChannels()
