@@ -2,7 +2,10 @@
 
 void joinChannel(Channel& channel, Client& client, Serveur& serveur)
 {
-    channel.addClient(&client);
+    if (channel.getOperator() == NULL)
+        channel.setOperator(&client);
+    else
+        channel.addClient(&client);
 
     std::string name = channel.getChannelName();
     std::string response;
@@ -39,7 +42,14 @@ void createChannel(const std::string& name, Client& client, Serveur& serveur)
 
 int handleJoin(const std::string& line, Client& client, Serveur& serveur)
 {
-    std::string name = getNthWord(line, 1);
+    std::vector<std::string> args = createArg(line);
+    if (args.size() < 2) 
+    {
+        std::string response = client.returnPrefixe() + ERR_NEEDMOREPARAMS(args[0]) + "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
+    } 
+    std::string name = args[1];
 
     if (name.empty())
     {
