@@ -77,7 +77,7 @@ void Serveur::run()
                     }
                     if (bytesReceived <= 0)
                         handleClientDisconnect(i);
-                    //displayHistory();
+                    displayHistory();
                 }
             }
        }
@@ -222,4 +222,15 @@ void Serveur::displayHistory()
     for (size_t i = 0; i < _historyChat.size(); ++i) {
         std::cout << _historyChat[i];
     }
+}
+
+int Serveur::checkChannelInServeur(std::string name)
+{
+    std::map<std::string, Channel>::iterator it = _channels.begin();
+    for (; it != _channels.end(); it++)
+    {
+        if (it->second.getChannelName() == name)
+            return (0);
+    }
+    return (1);
 }

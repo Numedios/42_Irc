@@ -2,6 +2,9 @@
 
 int handleMode(const std::string& line, Client& client, Serveur& serveur);
 int handleKick(const std::string& line, Client& client, Serveur& serveur);
+int handleQuit(const std::string& line, Client& client, Serveur& serveur);
+int handleInvite(const std::string& line, Client& client, Serveur& serveur);
+int handleTopic(const std::string& line, Client& client, Serveur& serveur);
 
 int handlePing(const std::string& line, Client& client, Serveur& serveur) 
 {
@@ -19,4 +22,7 @@ void fillCommandMap(std::map<std::string, FunctionPtr>& commands)
     commands["PING"] = handlePing;
     commands["MODE"] = handleMode;
     commands["KICK"] = handleKick;
+    commands["QUIT"] = handleQuit;
+    commands["INVITE"] = handleInvite;
+    commands["TOPIC"] = handleTopic;
 }

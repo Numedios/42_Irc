@@ -44,7 +44,7 @@
 # define RPL_NOTOPIC(channel) "331" + channel + " :No topic is set"
 # define RPL_TOPIC(channel, topic) "332" + channel + " :" + topic // join
 # define RPL_TOPICWHOTIME(client, channel, whoset, setat) "333 " + client + " " + channel + " " + whoset + " " + setat
-# define RPL_INVITING(nick, user, host, channel, nickname) "341 " + nick + "!" + user + "@" + host + " " + nickname + " " + channel + "\r\n"
+# define RPL_INVITING(channel, nick) "341" + channel + " " + nick
 # define RPL_VERSION(version, debuglevel, server) "351" + version + "." + debuglevel + " " + server
 # define RPL_WHOREPLY(channel, user, host, server, nick, status, hopcount, realname) ("352" + channel + " " + user + " " + host + " " + server + " " + nick + " " + status + " " + ":" + hopcount + " " + realname);
 # define RPL_NAMREPLY(channel, users, ops) "353 " + users + " = " + channel + " :" + ops // join
@@ -57,7 +57,7 @@
 # define RPL_YOUREOPER() "381:You are now an IRC operator"
 # define RPL_REHASHING(configfile) "382" + configfile + " :Rehashing"
 
-# define ERR_NOSUCHNICK(nickname) "401" + nickname + " :No such nick/channel"
+# define ERR_NOSUCHNICK(nickname) "401 " + nickname + " :No such nick/channel"
 # define ERR_NOSUCHSERVER(servername) "402" + servername + " :No such server"
 # define ERR_NOSUCHCHANNEL(channelname) "403 " + channelname + " :No such channel"
 # define ERR_CANNOTSENDTOCHAN(channelname) "404" + channelname + " :Cannot send to channel"
@@ -76,7 +76,7 @@
 # define ERR_UNAVAILRESOURCE(nickchannel) "437" + nickchannel + " :Nick/channel is temporarily unavailable"
 # define ERR_USERNOTINCHANNEL(nickname, channel) "441" + nickname + " " + channel + " :not on this channel"
 # define ERR_NOTONCHANNEL(channel) "442" + channel + " :You're not on that channel"
-# define ERR_USERONCHANNEL(username, channel) "443" + username + " " + channel + " :is already on channel"
+# define ERR_USERONCHANNEL(username, channel) "443 " + username + " " + channel + " :is already on channel"
 # define ERR_NOTREGISTERED(client) "451" + client + ": You have not registered"
 # define ERR_NEEDMOREPARAMS(command) (std::string ("461") + command + " :Not enough parameters")
 # define ERR_ALREADYREGISTRED() "462:Unauthorized command (already registered)"

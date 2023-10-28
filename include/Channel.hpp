@@ -11,15 +11,41 @@ class Client;
 class Channel {
 public:
     Channel() : _name("") {}
-    Channel(const std::string& name) : _name(name) {}
+    Channel(const std::string& name) : _name(name), _topic(""), _key("") ,_inviteOnly(false) {}
     std::string sendClientName(const Client& users);
     std::string sendAllClientsNames();
     int checkIfClientInChannel(Client* client);
     int checkIfClientInChannel(std::string client);
     void kickClient(std::string client);
 
+    bool	isClientInvited(Client* client) {
+        if (this->_invitedList.find(client->getSocket()) == this->_invitedList.end())
+            return false;
+
+        return true;
+    }
+
+    void	addInvitedClient(Client* client) {
+        if (isClientInvited(client))
+            return ;
+
+        this->_invitedList[client->getSocket()] = client;
+    }
+
+    void setTopic(std::string name)
+    {
+        _name = name;
+    }
+
+    void setInviteStatus(bool status) { this->_inviteOnly = status; }
+
     std::string& getChannelName(){
         return _name;
+    }
+
+
+    std::map<int, Client *> getClients(){
+        return _clients;
     }
 
     Client*	getOperator(){
@@ -34,6 +60,7 @@ public:
         _clients[client->getSocket()] = client;
     }
 
+    bool getInviteStatus() { return this->_inviteOnly; }
 
 private:
 

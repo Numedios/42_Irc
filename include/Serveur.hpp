@@ -33,6 +33,7 @@ std::string convertIntToString(int value);
 std::vector<std::string> createArg(const std::string& line);
 void printVector(std::vector<std::string>& vec);
 int handleJoin(const std::string& line, Client& client, Serveur& serveur);
+std::string createReason(const std::string& line, int place);
 
 class Client;
 class Channel;
@@ -50,6 +51,8 @@ public:
     int processAuthenticationManagement(int index);
     int processCommandManagement(int i);
     void displayHistory();
+    int checkChannelInServeur(std::string name);
+
     
     int getServeurSocket(){
         return _serverSocket;
@@ -95,9 +98,14 @@ public:
         return _auth;
     }
 
-    Channel& getChannel(std::string name)
+    Channel* getChannel(std::string name)
     {
-        return _channels[name];
+        std::map<std::string, Channel>::iterator	it;
+
+        it = this->_channels.find(name);
+        if (it == this->_channels.end())
+            return NULL;
+        return &(*it).second;
     }
 
     std::map<std::string, Channel>& getChannels()

@@ -8,14 +8,18 @@
 
 std::string getNthWord(const std::string& input, int place) {
     std::istringstream iss(input);
-
     std::vector<std::string> words;
 
     std::string word;
     while (iss >> word) {
         words.push_back(word);
     }
-    return words[place];
+
+    if (place >= 0 && place < words.size()) {
+        return words[place];
+    } else {
+        return ""; // Ou une autre valeur par défaut selon votre besoin
+    }
 }
 
 std::queue<std::string> splitToQueue(const std::string& input, char delimiter) {

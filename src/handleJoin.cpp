@@ -62,7 +62,7 @@ int handleJoin(const std::string& line, Client& client, Serveur& serveur)
     {
 
         std::cout << client.getNick() << " join channel :" << name << std::endl;
-        joinChannel(serveur.getChannel(name) , client, serveur);
+        joinChannel(*serveur.getChannel(name) , client, serveur);
         return (1);
     }
     std::cout << client.getNick() << " create new channel :" << name << std::endl;
