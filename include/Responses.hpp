@@ -21,7 +21,7 @@
 # define BANNED(nick, user, host, channel, target) (":" + nick + "!" + user + "@" + host + " MODE " + channel + " +b " + target)
 # define KICK(chan, kicked, reason) ("KICK " + chan + " " + kicked + " :" + reason)
 # define INVITE(nick, user, host, nickinvite, channel)  (":" + nick + "!" + user + "@" + host + " INVITE " + nickinvite + " " + channel)
-# define TOPIC(nick, user, host, chan, topic) (":" + nick + "!" + user + "@" + host + " TOPIC " + chan + " :" + topic)
+# define TOPIC(chan, topic) ("TOPIC " + chan + " :" + topic)
 # define MYJOIN(nickname, channame) (":" + nickname + " " + "JOIN" + " " + channame)
 
 ///////////////////////////////////////////////////////////////////////////
@@ -33,16 +33,16 @@
 # define RPL_MYINFO(servername, version, usermodes, channelmodes) (std::string("004:") + servername + " " + version + " " + usermodes + " " + channelmodes)
 
 # define RPL_UMODEIS(nick, usermode) "221 " + nick +  " " +  usermode
-# define RPL_AWAY(nick, message) "301" + nick + " :" + message
+# define RPL_AWAY(nick, message) "301 " + nick + " :" + message
 # define RPL_UNAWAY() "305:You are no longer marked as being away"
 # define RPL_NOWAWAY() "306:You have been marked as being away"
-# define RPL_ENDOFWHO(channel) ("315" + channel + " :End of WHO list")
-# define RPL_LIST(channel, visible, topic) "322" + channel + " " + visible + " :" + topic
+# define RPL_ENDOFWHO(channel) ("315 " + channel + " :End of WHO list")
+# define RPL_LIST(channel, visible, topic) "322 " + channel + " " + visible + " :" + topic
 # define RPL_LISTEND() "323:End of LIST"
 # define RPL_CHANNELMODEIS(channel, mode, modeParams) "324" + channel + " " + mode + " " + modeParams
 # define RPL_CREATIONTIME(client, channel, creationtime) "329 " + client + " " + channel + " " + creationtime
-# define RPL_NOTOPIC(channel) "331" + channel + " :No topic is set"
-# define RPL_TOPIC(channel, topic) "332" + channel + " :" + topic // join
+# define RPL_NOTOPIC(channel) "3 31" + channel + " :No topic is set"
+# define RPL_TOPIC(channel, topic, client) "332 " + client +  " " + channel + " :" + topic // join
 # define RPL_TOPICWHOTIME(client, channel, whoset, setat) "333 " + client + " " + channel + " " + whoset + " " + setat
 # define RPL_INVITING(channel, nick) "341" + channel + " " + nick
 # define RPL_VERSION(version, debuglevel, server) "351" + version + "." + debuglevel + " " + server
@@ -58,36 +58,36 @@
 # define RPL_REHASHING(configfile) "382" + configfile + " :Rehashing"
 
 # define ERR_NOSUCHNICK(nickname) "401 " + nickname + " :No such nick/channel"
-# define ERR_NOSUCHSERVER(servername) "402" + servername + " :No such server"
+# define ERR_NOSUCHSERVER(servername) "402 " + servername + " :No such server"
 # define ERR_NOSUCHCHANNEL(channelname) "403 " + channelname + " :No such channel"
-# define ERR_CANNOTSENDTOCHAN(channelname) "404" + channelname + " :Cannot send to channel"
-# define ERR_TOOMANYCHANNELS(channelname) "405" + channelname + " :You have joined too many channels"
-# define ERR_TOOMANYTARGETS(target) "407" + target + " :Duplicate recipients. No message delivered"
+# define ERR_CANNOTSENDTOCHAN(channelname) "404 " + channelname + " :Cannot send to channel"
+# define ERR_TOOMANYCHANNELS(channelname) "405 " + channelname + " :You have joined too many channels"
+# define ERR_TOOMANYTARGETS(target) "407 " + target + " :Duplicate recipients. No message delivered"
 # define ERR_NOORIGIN() "409:No origin specified"
 # define ERR_NORECIPIENT(command) (std::string ("411:No recipient given (") + command + ")")
 # define ERR_NOTEXTTOSEND() (std::string("412:No text to send"))
-# define ERR_NOTOPLEVEL(mask) "413" + mask + " :No toplevel domain specified"
-# define ERR_WILDTOPLEVEL(mask) "414" + mask + " :Wildcard in toplevel domain"
+# define ERR_NOTOPLEVEL(mask) "413 " + mask + " :No toplevel domain specified"
+# define ERR_WILDTOPLEVEL(mask) "414 " + mask + " :Wildcard in toplevel domain"
 # define ERR_NOMOTD() "422:MOTD File is missing"
 # define ERR_NONICKNAMEGIVEN() (std::string ("431:No nickname given"))
-# define ERR_ERRONEUSNICKNAME(nickname) "432" + nickname + " :Erroneous nickname"
-# define ERR_NICKNAMEINUSE(nickname) "433" + nickname + " :Nickname is already in use"
+# define ERR_ERRONEUSNICKNAME(nickname) "432 " + nickname + " :Erroneous nickname"
+# define ERR_NICKNAMEINUSE(nickname) "433 " + nickname + " :Nickname is already in use"
 # define ERR_NICKCOLLISION(nickname, username, host) "436" + nickname + " :Nickname collision KILL from " + username + "@" + host
-# define ERR_UNAVAILRESOURCE(nickchannel) "437" + nickchannel + " :Nick/channel is temporarily unavailable"
+# define ERR_UNAVAILRESOURCE(nickchannel) "437 " + nickchannel + " :Nick/channel is temporarily unavailable"
 # define ERR_USERNOTINCHANNEL(nickname, channel) "441" + nickname + " " + channel + " :not on this channel"
-# define ERR_NOTONCHANNEL(channel) "442" + channel + " :You're not on that channel"
+# define ERR_NOTONCHANNEL(channel) "442 " + channel + " :You're not on that channel"
 # define ERR_USERONCHANNEL(username, channel) "443 " + username + " " + channel + " :is already on channel"
-# define ERR_NOTREGISTERED(client) "451" + client + ": You have not registered"
-# define ERR_NEEDMOREPARAMS(command) (std::string ("461") + command + " :Not enough parameters")
+# define ERR_NOTREGISTERED(client) "451 " + client + ": You have not registered"
+# define ERR_NEEDMOREPARAMS(command) (std::string ("461 ") + command + " :Not enough parameters")
 # define ERR_ALREADYREGISTRED() "462:Unauthorized command (already registered)"
 # define ERR_PASSWDMISMATCH() "464:Password incorrect"
-# define ERR_CHANNELISFULL(channel) "471" + channel + " :Cannot join channel (+l)"
-# define ERR_UNKNOWNMODE(mode, channel) "472" + mode + " :is unknown mode char to me for " + channel
-# define ERR_INVITEONLYCHAN(channel) "473" + channel + " :Cannot join channel (+i)"
-# define ERR_BANNEDFROMCHAN(channel) "474" + channel + " :Cannot join channel (+b)"
-# define ERR_BADCHANNELKEY(channel) "475" + channel + " :Cannot join channel (+k)"
+# define ERR_CHANNELISFULL(channel) "471 " + channel + " :Cannot join channel (+l)"
+# define ERR_UNKNOWNMODE(mode, channel) "472 " + mode + " :is unknown mode char to me for " + channel
+# define ERR_INVITEONLYCHAN(channel) "473 " + channel + " :Cannot join channel (+i)"
+# define ERR_BANNEDFROMCHAN(channel) "474 " + channel + " :Cannot join channel (+b)"
+# define ERR_BADCHANNELKEY(channel) "475 " + channel + " :Cannot join channel (+k)"
 # define ERR_BADCHANMASK(channel) "476 " + channel + ": Bad Channel Mask"
-# define ERR_NOCHANMODES(channel) "477" + channel + " :Channel doesn't support modes"
+# define ERR_NOCHANMODES(channel) "477 " + channel + " :Channel doesn't support modes"
 # define ERR_NOPRIVILEGES() "481:Permission Denied- You're not an IRC operator"
 # define ERR_CHANOPRIVSNEEDED(channel) "482 " + channel + " :You're not channel operator"
 # define ERR_CANTKILLSERVER() "483:You can't kill a server!"

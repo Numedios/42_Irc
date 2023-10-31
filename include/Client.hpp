@@ -26,6 +26,8 @@ public:
         Authenticated
     };
 
+    
+
     int getId() const {
         return _id;
     }

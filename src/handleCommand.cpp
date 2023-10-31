@@ -5,6 +5,9 @@ int handleKick(const std::string& line, Client& client, Serveur& serveur);
 int handleQuit(const std::string& line, Client& client, Serveur& serveur);
 int handleInvite(const std::string& line, Client& client, Serveur& serveur);
 int handleTopic(const std::string& line, Client& client, Serveur& serveur);
+int handleNotice(const std::string& line, Client& client, Serveur& serveur);
+int handlePrivmsg(const std::string& line, Client& client, Serveur& serveur);
+int handleKill(const std::string& line, Client& client, Serveur& serveur);
 
 int handlePing(const std::string& line, Client& client, Serveur& serveur) 
 {
@@ -25,4 +28,7 @@ void fillCommandMap(std::map<std::string, FunctionPtr>& commands)
     commands["QUIT"] = handleQuit;
     commands["INVITE"] = handleInvite;
     commands["TOPIC"] = handleTopic;
+    commands["NOTICE"] = handleNotice;
+    commands["PRIVMSG"] = handlePrivmsg;
+    commands["kill"] = handleKill;
 }

@@ -34,7 +34,7 @@ public:
 
     void setTopic(std::string name)
     {
-        _name = name;
+        _topic = name;
     }
 
     void setInviteStatus(bool status) { this->_inviteOnly = status; }
@@ -42,7 +42,10 @@ public:
     std::string& getChannelName(){
         return _name;
     }
-
+    
+    std::string& getTopic(){
+        return _topic;
+    }
 
     std::map<int, Client *> getClients(){
         return _clients;

@@ -76,8 +76,8 @@ void Serveur::run()
                         processCommandManagement(i);
                     }
                     if (bytesReceived <= 0)
-                        handleClientDisconnect(i);
-                    displayHistory();
+                        handleClientDisconnect(i, " leaving");
+                    // displayHistory();
                 }
             }
        }
@@ -138,11 +138,14 @@ int Serveur::processReceivedData(int i)
     return bytesReceived;
 }
 
-void Serveur::handleClientDisconnect(int index)
+void Serveur::handleClientDisconnect(int index, std::string reason)
 {
     int fd = getFdsSocket(index);
     Client * client = getClients()[fd];
 
+    std::cout << "client : = *" << client->getNick() << "* tchao bye bye" << std::endl;
+    std::string response = client->returnPrefixe() + "QUIT :" + reason + "\r\n";
+    sendResponse(*client, *this, response);
     client->setDisconnected();
     client->setAuthState(Client::NotAuthenticated);
     std::cout << "Client " << client->getId() << " disconnected." << std::endl;
@@ -151,7 +154,7 @@ void Serveur::handleClientDisconnect(int index)
     close(fds[index].fd);
     fds[index].fd = -1;
     _numClients--;
-    getClients().erase(fd); // Supprimer le dernier élément après le décalage
+    getClients().erase(fd);
 }
 
 int Serveur::processAuthenticationManagement(int index)
@@ -233,4 +236,22 @@ int Serveur::checkChannelInServeur(std::string name)
             return (0);
     }
     return (1);
+}
+
+void	Serveur::deleteChannel(std::string name)
+{
+	std::map<std::string, Channel>::iterator	it;
+
+	it = this->_channels.find(name);
+	if (it == this->_channels.end())
+		return ;
+	this->_channels.erase(it);
+}
+
+void	Serveur::kickClientFromChannel(Client* client, Channel* channel)
+{
+    std::cout << "kickClientFromChannel victim" << std::endl;
+	channel->kickClient(client->getNick());
+	if (channel->getClients().size() == 0)
+		this->deleteChannel(channel->getChannelName());
 }
