@@ -2,7 +2,8 @@
 
 void joinChannel(Channel& channel, Client& client, Serveur& serveur)
 {
-    if (channel.getOperator() == NULL)
+
+    if (channel.getOperators().empty())
         channel.setOperator(&client);
     else
         channel.addClient(&client);

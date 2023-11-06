@@ -35,7 +35,7 @@ int handleInvite(const std::string& line, Client& client, Serveur& serveur)
             return 1;
         }
     }
-    if (channel->getInviteStatus() == true && client.getNick() != channel->getOperator()->getNick())
+    if (channel->getInviteStatus() == true && channel->checkIfClientOperator(&client) != 0)
 	{
         std::string response = client.returnPrefixe() + ERR_CHANOPRIVSNEEDED(channelStr) + "\r\n";
         sendResponse(client, serveur, response);

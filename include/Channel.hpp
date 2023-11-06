@@ -18,6 +18,54 @@ public:
     int checkIfClientInChannel(std::string client);
     void kickClient(std::string client);
 
+    Client * getOperator(std::string client)
+    {
+        std::map<int, Client *>::iterator it = _operators.begin();
+
+        for (; it != _operators.end(); it++)
+        {
+            if (it->second->getNick() == client)
+                return (it->second);
+        }
+        return (it->second);
+    }
+
+    Client * getOperator(Client* client)
+    {
+        std::map<int, Client *>::iterator it = _operators.begin();
+
+        for (; it != _operators.end(); it++)
+        {
+            if (it->second->getNick() == client->getNick())
+                return (it->second);
+        }
+        return (it->second);
+    }
+
+    int checkIfClientOperator(std::string client)
+    {
+        std::map<int, Client *>::iterator it = _operators.begin();
+
+        for (; it != _operators.end(); it++)
+        {
+            if (it->second->getNick() == client)
+                return (0);
+        }
+        return (1);
+    }
+
+    int checkIfClientOperator(Client* client)
+    {
+        std::map<int, Client *>::iterator it = _operators.begin();
+
+        for (; it != _operators.end(); it++)
+        {
+            if (it->second->getNick() == client->getNick())
+                return (0);
+        }
+        return (1);
+    }
+
     bool	isClientInvited(Client* client) {
         if (this->_invitedList.find(client->getSocket()) == this->_invitedList.end())
             return false;
@@ -51,12 +99,12 @@ public:
         return _clients;
     }
 
-    Client*	getOperator(){
-        return _operator;
+    std::map<int, Client *>	getOperators(){
+        return _operators;
     }
 
     void setOperator(Client* client){
-        _operator = client;
+        _operators[client->getSocket()] = client;
     }
 
     void addClient(Client *client){
@@ -70,7 +118,7 @@ private:
     std::string				_name;
 	std::string				_topic;
 	std::string				_key;
-	Client*					_operator;
+	std::map<int, Client *>	_operators;
 	bool					_inviteOnly;
 	std::map<int, Client *>	_clients;
 	std::map<int, Client *>	_invitedList;

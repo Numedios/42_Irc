@@ -22,6 +22,7 @@ int handleNotice(const std::string& line, Client& client, Serveur& serveur)
 		Channel *channel = serveur.getChannel(target);
 		
 		std::map<int, Client *> clients = channel->getClients();
+		std::map<int, Client *> operators = channel->getOperators();
 		std::map<int, Client *>::iterator it;
 		for (it = clients.begin(); it != clients.end(); it++)
 		{
@@ -31,8 +32,14 @@ int handleNotice(const std::string& line, Client& client, Serveur& serveur)
                 sendResponse(*it->second, serveur, response);
             }
 		}
-            response = channel->getOperator()->returnPrefixe() + "NOTICE " + target + " " + ":" + message + "\r\n";
-            sendResponse(*channel->getOperator(), serveur, response);
+		for (it = operators.begin(); it != operators.end(); it++)
+		{
+			if ((*it).second->getNick() != client.getNick())
+            {
+				response = it->second->returnPrefixe() + "NOTICE " + target  + "\r\n";
+                sendResponse(*it->second, serveur, response);
+            }
+		}
 	}
     else
 	{

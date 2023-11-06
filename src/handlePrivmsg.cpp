@@ -35,6 +35,7 @@ int handlePrivmsg(const std::string& line, Client& client, Serveur& serveur)
 		Channel *channel = serveur.getChannel(target);
 		
 		std::map<int, Client *> clients = channel->getClients();
+		std::map<int, Client *> operators = channel->getOperators();
 		std::map<int, Client *>::iterator it;
 		for (it = clients.begin(); it != clients.end(); it++)
 		{
@@ -44,10 +45,13 @@ int handlePrivmsg(const std::string& line, Client& client, Serveur& serveur)
                 sendResponse(*it->second, serveur, response);
             }
 		}
-		if (channel->getOperator() != NULL && client.getNick() != channel->getOperator()->getNick())
+		for (it = operators.begin(); it != operators.end(); it++)
 		{
-        	response = client.returnPrefixe() + "PRIVMSG " + target + " "  + message + "\r\n";
-        	sendResponse(*channel->getOperator(), serveur, response);
+			if ((*it).second->getNick() != client.getNick())
+            {
+				response = client.returnPrefixe() + "PRIVMSG " + target  + " " + message + "\r\n";
+                sendResponse(*it->second, serveur, response);
+            }
 		}
 	}
     else
