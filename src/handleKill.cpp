@@ -28,7 +28,6 @@ int handleKill(const std::string& line, Client& client, Serveur& serveur)
 	size_t	posStartComment = line.find(':') + 1;
 
 	buffer = line.substr(posStartComment, line.size() - posStartComment - 1);
-	serveur.kickClientFromAllChannelsWithJoin(victim, buffer);
 	std::string response = victim->returnPrefixe() + "KILL :" + buffer + "\r\n";
     sendResponse(client, serveur, response);
 	serveur.handleClientDisconnect(victim->getId(), "<KILLED>");

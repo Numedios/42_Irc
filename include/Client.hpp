@@ -57,6 +57,11 @@ public:
         return _pendingCommand;
     }
 
+    void setId(int id)
+    {
+        _id = id;
+    }
+
     void setDisconnected() {
         _isConnected = false;
     }

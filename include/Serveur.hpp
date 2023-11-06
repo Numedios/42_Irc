@@ -59,15 +59,13 @@ public:
 
     void	kickClientFromAllChannelsWithJoin(Client* client, std::string reason)
     {
-        std::cout << "kickClientFromAllChannelsWithJoin victim" << std::endl;
         std::vector<Channel *>	channelsWhereClientIs;
 
         for (std::map<std::string, Channel>::iterator it = this->_channels.begin(); it != this->_channels.end(); it++)
         {
-            std::cout << "la1**********************" << std::endl;
             if ((*it).second.checkIfClientInChannel(client->getNick()) == 0)
             {
-                std::cout << "victim se trouve dans le channel = " << it->second.getChannelName() << std::endl;
+        
                 channelsWhereClientIs.push_back(&(*it).second);
             }
         }
@@ -77,12 +75,23 @@ public:
 
             for (std::map<int, Client *>::iterator it_channel = clients.begin(); it_channel != clients.end(); ++it_channel)
             {
-                std::cout << "msg PART pour dire que victime a ete virer a " << it_channel->second->getNick() << std::endl;
                 std::string response = client->returnPrefixe() + "PART " + channelsWhereClientIs[0]->getChannelName() + " " + reason + "\r\n";
                 sendResponse(*it_channel->second, *this, response);
             }
             this->kickClientFromChannel(client, channelsWhereClientIs[0]);
             channelsWhereClientIs.erase(channelsWhereClientIs.begin());
+        }
+    }
+    
+
+    void allClientIndexDown(int index)
+    {
+        std::map<int , Client *>::iterator it =  _clients.begin();
+
+        for (; it != _clients.end(); it++)
+        {
+            if (it->second->getId() >= index)
+                (it)->second->setId(it->second->getId() - 1);
         }
     }
     

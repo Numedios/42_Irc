@@ -78,7 +78,7 @@ void Serveur::run()
                     }
                     if (bytesReceived <= 0)
                         handleClientDisconnect(i, " leaving");
-                    // displayHistory();
+                    displayHistory();
                 }
             }
        }
@@ -144,9 +144,9 @@ void Serveur::handleClientDisconnect(int index, std::string reason)
     int fd = getFdsSocket(index);
     Client * client = getClients()[fd];
 
-    std::cout << "client : = *" << client->getNick() << "* tchao bye bye" << std::endl;
     std::string response = client->returnPrefixe() + "QUIT :" + reason + "\r\n";
     sendResponse(*client, *this, response);
+    kickClientFromAllChannelsWithJoin(client, reason);
     client->setDisconnected();
     client->setAuthState(Client::NotAuthenticated);
     std::cout << "Client " << client->getId() << " disconnected." << std::endl;
@@ -154,8 +154,13 @@ void Serveur::handleClientDisconnect(int index, std::string reason)
     // _historyChat.push_back(create_message(client, ":SERVER", message));
     close(fds[index].fd);
     fds[index].fd = -1;
+    for (int i = index; i < MAX_CLIENTS; i++) 
+    {
+        fds[i] = fds[i + 1];
+    }
     _numClients--;
     getClients().erase(fd);
+    allClientIndexDown(index);
 }
 
 int Serveur::processAuthenticationManagement(int index)
