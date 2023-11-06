@@ -43,6 +43,7 @@ const int MAX_CLIENTS = 10;
 class Serveur {
 public:
     Serveur(int port, char *password);
+    Serveur();
     void run();
     void printInfoServeur();
     int acceptClient();
@@ -54,6 +55,7 @@ public:
     int checkChannelInServeur(std::string name);
     void deleteChannel(std::string name);
     void kickClientFromChannel(Client* client, Channel* channel);
+    void closeServer();
 
     void	kickClientFromAllChannelsWithJoin(Client* client, std::string reason)
     {

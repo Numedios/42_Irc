@@ -1,5 +1,6 @@
 #include "../include/Serveur.hpp"
 
+Serveur::Serveur() {}
 
 std::string getNthWord(const std::string& input, int place);
 void mergeQueues(std::queue<std::string>& q1, std::queue<std::string>& q2);
@@ -255,3 +256,13 @@ void	Serveur::kickClientFromChannel(Client* client, Channel* channel)
 	if (channel->getClients().size() == 0)
 		this->deleteChannel(channel->getChannelName());
 }
+
+void    Serveur::closeServer() {
+    std::map<int, Client *>::iterator client = _clients.begin();
+    for (; client != _clients.end(); ++client) {
+        delete client->second;
+        _clients.erase(client);
+    }
+    std::cout << "Goodbye" << std::endl;
+}
+

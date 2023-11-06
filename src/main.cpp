@@ -17,7 +17,15 @@ struct sockaddr_in {
 #include <poll.h>
 #include <vector>
 #include <cstdlib>
+#include <signal.h>
 #include "../include/Serveur.hpp"
+
+Serveur server;
+
+void    handle_sigint(int sig) {
+    server.closeServer();
+    exit(0);
+}
 
 int main(int argc, char **argv)
 {
@@ -26,11 +34,21 @@ int main(int argc, char **argv)
         std::cout << "Error number arguments !" << std::endl;
         return (0);
     }
+    Serveur server = Serveur(std::atoi(argv[1]), argv[2]);
 
-    Serveur server(std::atoi(argv[1]), argv[2]);
+    struct sigaction sa;
+    sa.sa_handler = handle_sigint;
+    sa.sa_flags = 0;
+    sigemptyset(&sa.sa_mask);
+
+    if (sigaction(SIGINT, &sa, NULL) == -1) {
+        perror("Erreur lors de l'installation du gestionnaire SIGINT");
+        exit(1);
+    }
     server.run();
     return 0;
 }
+
 
 /*
     15:40:19:   <--{4}[MODE aaaa +i
