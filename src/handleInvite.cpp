@@ -30,6 +30,7 @@ int handleInvite(const std::string& line, Client& client, Serveur& serveur)
         }
         if (!(channel->checkIfClientInChannel(serveur.getClient(nicknameStr))))
         {
+            std::cout <<  "nickbane " << nicknameStr << std::endl;
             std::string response = client.returnPrefixe() + ERR_USERONCHANNEL(targetClient->getNick(), channelStr) + "\r\n";
             sendResponse(client, serveur, response);
             return 1;

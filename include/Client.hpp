@@ -26,7 +26,9 @@ public:
         Authenticated
     };
 
-    
+    bool operator==(const Client& other) const {
+        return _id == other._id;
+    }
 
     int getId() const {
         return _id;

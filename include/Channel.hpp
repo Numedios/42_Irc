@@ -17,6 +17,11 @@ public:
     int checkIfClientInChannel(Client* client);
     int checkIfClientInChannel(std::string client);
     void kickClient(std::string client);
+    void removeOperator(Client *A, Client *B, bool o);
+    void setInvitation(Client *client, bool i);
+    void setKeyPass(Client *client, bool k, std::string pass);
+    void setLimitUser(Client *client, bool l, int limit);
+    int  isOperator(Client * client);
 
     Client * getOperator(std::string client)
     {
@@ -113,6 +118,12 @@ public:
 
     bool getInviteStatus() { return this->_inviteOnly; }
 
+    void setMaxUsers(int max) {
+        _maxUsers = max;
+    }
+
+    int getMaxUsers() { return _maxUsers; }
+
 private:
 
     std::string				_name;
@@ -122,6 +133,8 @@ private:
 	bool					_inviteOnly;
 	std::map<int, Client *>	_clients;
 	std::map<int, Client *>	_invitedList;
+    int                     _maxUsers;
+
 
 };
 
