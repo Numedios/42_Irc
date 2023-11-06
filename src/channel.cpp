@@ -25,7 +25,7 @@ std::string Channel::sendAllClientsNames()
       names += " ";
     }
 
-    std::map<int, Client *>::iterator it = _clients.begin();
+    it = _clients.begin();
     for (; it != _clients.end(); it++)
     {
         if (it->second != NULL) {
@@ -45,7 +45,7 @@ int Channel::checkIfClientInChannel(Client* client)
         if (it->second->getNick() == client->getNick())
             return (0);
     }
-    std::map<int, Client *>::iterator it = _clients.begin();
+    it = _clients.begin();
     for (; it != _clients.end(); it++)
     {
         if (it->second == client)
@@ -63,7 +63,7 @@ int Channel::checkIfClientInChannel(std::string client)
         if (it->second->getNick() == client)
             return (0);
     }
-    std::map<int, Client *>::iterator it = _clients.begin();
+    it = _clients.begin();
     for (; it != _clients.end(); it++)
     {
         if (it->second->getNick() == client)
@@ -91,7 +91,7 @@ void Channel::kickClient(std::string client)
             ++it;
         }
     }
-    std::map<int, Client *>::iterator it = _clients.begin();
+    it = _clients.begin();
     for (; it != _clients.end();)
     {
         if (it->second->getNick() == client)

@@ -58,13 +58,3 @@ int handleTopic(const std::string& line, Client& client, Serveur& serveur)
     }
     return (0);
 }
-
-
-/*
-15:59:47:-->   {4}[:said!sbelabba@127.0.0.1 332 #lol :onestla
-15:56:17:-->   {4}[:sofiane!sbelabba@127.0.0.1 332 sofiane #lol :on est la
-
-15:56:17:-->   {5}[:said!sbelabba@127.0.0.1 332 said #lol :on est la
-15:59:47:-->   {5}[:sofiane!sbelabba@127.0.0.1 332 #lol :onestla
-
-
