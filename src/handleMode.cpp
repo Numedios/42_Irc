@@ -18,12 +18,23 @@ std::string getLastWord(const std::string& input) {
 
 int handleMode(const std::string& line, Client& client, Serveur& serveur) 
 {
-    std::string usermode = getLastWord(line);
-    std::string response = client.returnPrefixe() + RPL_UMODEIS(client.getNick(), usermode)+ "\r\n";
     
-    sendResponse(client, serveur, response);
+    // sendResponse(client, serveur, response);
 
-    
+    std::vector<std::string> args = createArg(line);
+    std::string response;
+    if (args[1][0] == '#') {
+        Channel *c = serveur.getChannel(args[1]);
+        if(!c->isOperator(&client)) {
+            response = "You don't have the correct access to do this\n";
+            sendResponse(client, serveur, response);
+        }
+        c->findMode(&client, args[2], "");
+        // response = "RHAAAAAAAAAAAAAAAAAAAA";
+        std::string usermode = getLastWord(line);
+        response = client.returnPrefixe() + RPL_UMODEIS(client.getNick(), usermode)+ "\r\n";
+        sendResponse(client, serveur, response);
+    }
     
     return (0);
 }
