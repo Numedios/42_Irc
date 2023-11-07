@@ -83,7 +83,7 @@
 # define ERR_PASSWDMISMATCH() "464:Password incorrect"
 # define ERR_CHANNELISFULL(channel) "471 " + channel + " :Cannot join channel (+l)"
 # define ERR_UNKNOWNMODE(mode, channel) "472 " + mode + " :is unknown mode char to me for " + channel
-# define ERR_INVITEONLYCHAN(channel) "473 " + channel + " :Cannot join channel (+i)"
+# define ERR_INVITEONLYCHAN(client, channel) "473 " + client +  " " + channel + " :Cannot join channel (+i)"
 # define ERR_BANNEDFROMCHAN(channel) "474 " + channel + " :Cannot join channel (+b)"
 # define ERR_BADCHANNELKEY(channel) "475 " + channel + " :Cannot join channel (+k)"
 # define ERR_BADCHANMASK(channel) "476 " + channel + ": Bad Channel Mask"

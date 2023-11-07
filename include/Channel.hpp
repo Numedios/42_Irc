@@ -80,6 +80,30 @@ public:
         return (1);
     }
 
+    int checkIfClientInvited(std::string client)
+    {
+        std::map<int, Client *>::iterator it = _invitedList.begin();
+
+        for (; it != _invitedList.end(); it++)
+        {
+            if (it->second->getNick() == client)
+                return (0);
+        }
+        return (1);
+    }
+
+    int checkIfClientInvited(Client* client)
+    {
+        std::map<int, Client *>::iterator it = _invitedList.begin();
+
+        for (; it != _invitedList.end(); it++)
+        {
+            if (it->second->getNick() == client->getNick())
+                return (0);
+        }
+        return (1);
+    }
+
     bool	isClientInvited(Client* client) {
         if (this->_invitedList.find(client->getSocket()) == this->_invitedList.end())
             return false;
@@ -94,12 +118,21 @@ public:
         this->_invitedList[client->getSocket()] = client;
     }
 
+    void	delInvitedClient(Client* client) {
+        if (isClientInvited(client))
+            return ;
+
+        this->_invitedList[client->getSocket()] = client;
+    }
+
     void setTopic(std::string name)
     {
         _topic = name;
     }
 
     void setInviteStatus(bool status) { this->_inviteOnly = status; }
+
+
 
     std::string& getChannelName(){
         return _name;
@@ -125,7 +158,9 @@ public:
         _clients[client->getSocket()] = client;
     }
 
-    bool getInviteStatus() { return this->_inviteOnly; }
+    bool getInviteStatus() { 
+        return _inviteOnly; 
+    }
 
     void setMaxUsers(int max) {
         _maxUsers = max;
