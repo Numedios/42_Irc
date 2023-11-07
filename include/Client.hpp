@@ -12,7 +12,7 @@
 
 class Client {
 public:
-    Client(int socket, int id) : _socket(socket), _isConnected(true), _id(id), _authenticated(false), _pendingCommand(""), _currentChannel(""), _nick(""), _userName(""), _ip(""), _authState(NotAuthenticated) {}
+    Client(int socket, int id) : _id(id), _socket(socket), _isConnected(true), _authenticated(false), _pendingCommand(""), _currentChannel(""), _nick(""), _userName(""), _ip(""), _authState(NotAuthenticated) {}
     
     void printInfoClient();
     std::string returnPrefixe();

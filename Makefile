@@ -8,7 +8,7 @@ NAME = irc
 #                                   COMMANDS                                   #
 #==============================================================================#
 
-CXX = c++
+CXX = c++ 
 CXXFLAGS = -std=c++98
 DFLAGS = -MMD
 MKDIR = mkdir -p

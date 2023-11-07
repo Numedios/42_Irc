@@ -108,6 +108,26 @@ void Channel::kickClient(std::string client)
     }
 }
 
+void    Channel::fillModesMap() {
+    _modes["+i"] = &Channel::setInvitation;
+    _modes["-i"] = &Channel::removeInvitation;
+    _modes["+k"] = &Channel::setKeyPass;
+    _modes["-k"] = &Channel::removeKeyPass;
+    _modes["+o"] = &Channel::addOperator;
+    _modes["-o"] = &Channel::removeOperator;
+    _modes["+l"] = &Channel::setLimitUser;
+    _modes["-l"] = &Channel::removeLimitUser;
+}
+
+void    Channel::findMode(Client *client, std::string const& arg, std::string const& line) {
+        if (_modes.find(arg) != _modes.end()) {
+            ModeFunction func = _modes[arg];
+            (this->*func)(client, line);
+        } else {
+            std::cout << "Undefined mode" << std::endl;
+        }
+    }
+
 int     Channel::isOperator(Client *client) {
 std::map<int, Client*>::const_iterator it;
     for (it = this->_operators.begin(); it != this->_operators.end(); ++it) {
@@ -117,56 +137,61 @@ std::map<int, Client*>::const_iterator it;
     }
     return (0);
 }
-
-void    Channel::setInvitation(Client *client, bool i) {
+ 
+void    Channel::setInvitation(Client *client, std::string const& line) {
     if (!isOperator(client)) {
         std::cout << "You don't have the correct access to do this\n" << std::endl;
         return ;
     }
-    this->_inviteOnly = i;   
+    this->_inviteOnly = true;
+    (void) line;
 }
 
-void    Channel::setKeyPass(Client *client, bool k, std::string pass) {
+void    Channel::removeInvitation(Client *client, std::string const& line ) {
+    this->_inviteOnly = false;
+    (void) line;
+}
+
+void    Channel::setKeyPass(Client *client, std::string const& pass) {
     if (!isOperator(client)) {
         std::cout << "You don't have the correct access to do this" << std::endl;
         return ;
     }
-    if (k) {
+    this->_key = pass;
+    std::cout << "Password has been updated" << std::endl;
+}
+
+void    Channel::removeKeyPass(Client *client, std::string const& pass) {
         this->_key.clear();
         std::cout << "Password has ben removed" << std::endl;
+}
+
+void    Channel::addOperator(Client *client, std::string const& line) {
+    if (!isOperator(client)) {
+        this->_operators[client->getId()] = client;
+        std::cout << client->getNick() << " is now an operator" << std::endl;
+    } else
+        std::cout << client->getNick() << " is already an operator" << std::endl;
+    (void) line;    
+}
+
+void    Channel::removeOperator(Client *client, std::string const& line) {
+    if (isOperator(client)) {
+        this->_operators.erase(client->getId());
+        std::cout << client->getNick() << " is no more an operator" << std::endl;
     } else {
-        this->_key = pass;
-        std::cout << "Password has been updated" << std::endl;
+        std::cout << client->getNick() << " is not an operator" << std::endl;  
     }
 }
 
-void    Channel::removeOperator(Client *A, Client *B, bool o) {
-    if (!isOperator(A)) {
-        std::cout << "You don't have the correct access to do this" << std::endl;
-        return ;
-    }
-    if (o) {
-        if (!isOperator(B)) {
-            this->_operators[B->getId()] = B;
-            std::cout << B->getNick() << " is now an operator" << std::endl;
-        } else
-            std::cout << B->getNick() << " is already an operator" << std::endl;
-    } else {
-        if (isOperator(B)) {
-            this->_operators.erase(B->getId());
-            std::cout << B->getNick() << " is no more an operator" << std::endl;
-        } else
-            std::cout << B->getNick() << " is not an operator" << std::endl;  
-    }
-}
-
-void    Channel::setLimitUser(Client *client, bool l, int limit) {
+void    Channel::setLimitUser(Client *client, std::string const& limit) {
     if (!isOperator(client)) {
         std::cout << "You don't have the correct access to do this" << std::endl;
         return ;
     }
-    if (l)
-        _maxUsers = limit;
-    else
-        limit = MAX_CLIENTS;
+    _maxUsers = std::atoi(limit.c_str());
+}
+
+void    Channel::removeLimitUser(Client *client, std::string const& line) {  
+    _maxUsers = MAX_CLIENTS;
 }

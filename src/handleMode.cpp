@@ -22,5 +22,8 @@ int handleMode(const std::string& line, Client& client, Serveur& serveur)
     std::string response = client.returnPrefixe() + RPL_UMODEIS(client.getNick(), usermode)+ "\r\n";
     
     sendResponse(client, serveur, response);
+
+    
+    
     return (0);
 }

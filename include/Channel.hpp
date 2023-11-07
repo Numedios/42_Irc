@@ -8,6 +8,7 @@
 
 class Client;
 
+
 class Channel {
 public:
     Channel() : _name("") {}
@@ -17,11 +18,19 @@ public:
     int checkIfClientInChannel(Client* client);
     int checkIfClientInChannel(std::string client);
     void kickClient(std::string client);
-    void removeOperator(Client *A, Client *B, bool o);
-    void setInvitation(Client *client, bool i);
-    void setKeyPass(Client *client, bool k, std::string pass);
-    void setLimitUser(Client *client, bool l, int limit);
-    int  isOperator(Client * client);
+    typedef void (Channel::*ModeFunction)(Client*, const std::string&);
+
+    void fillModesMap();
+    void findMode(Client *client, std::string const& arg, std::string const& line);
+    int  isOperator(Client *client);
+    void setInvitation(Client *client, std::string const& line);
+    void removeInvitation(Client *client, std::string const& line );
+    void setKeyPass(Client *client, std::string const& pass);
+    void removeKeyPass(Client *client, std::string const& pass);
+    void addOperator(Client *client, std::string const& line);
+    void removeOperator(Client *client, std::string const& line);
+    void setLimitUser(Client *client, std::string const& limit);
+    void removeLimitUser(Client *client, std::string const& line);
 
     Client * getOperator(std::string client)
     {
@@ -134,7 +143,7 @@ private:
 	std::map<int, Client *>	_clients;
 	std::map<int, Client *>	_invitedList;
     int                     _maxUsers;
-
+    std::map<std::string, ModeFunction> _modes;
 
 };
 

@@ -24,6 +24,7 @@ Serveur server;
 
 void    handle_sigint(int sig) {
     server.closeServer();
+    (void) sig;
     exit(0);
 }
 
