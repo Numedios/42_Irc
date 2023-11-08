@@ -62,9 +62,10 @@ public:
     ~Serveur() 
     {
         std::map<int, Client *>::iterator client = _clients.begin();
+
         for (; client != _clients.end(); ++client) {
             delete client->second;
-            _clients.erase(client);
+            
         }
         for (int i = 0; i < _numClients; ++i) {
         if (fds[i].fd != -1) {
