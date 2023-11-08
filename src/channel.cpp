@@ -141,23 +141,33 @@ std::map<int, Client*>::const_iterator it;
  
 void    Channel::setInvitation(Client *client, std::string const& line) {
     this->_inviteOnly = true;
-    std::cerr << "Serveur is now on invitation mode" << std::endl;
+    std::cout << "Serveur is now on invitation mode" << std::endl;
     (void) line;
+    (void) client;
 }
 
 void    Channel::removeInvitation(Client *client, std::string const& line ) {
+    std::cout << "Invitation mode has been removed" << std::endl;
     this->_inviteOnly = false;
     (void) line;
+    (void) client;
 }
 
 void    Channel::setKeyPass(Client *client, std::string const& pass) {
+    if (pass.empty()) {
+        std::cout << "Uncorrect value of arguments" << std::endl;
+        return ;
+    }
     this->_key = pass;
     std::cout << "Password has been updated" << std::endl;
+    (void) client;
 }
 
 void    Channel::removeKeyPass(Client *client, std::string const& pass) {
     this->_key.clear();
     std::cout << "Password has ben removed" << std::endl;
+    (void) client;
+    (void) pass;
 }
 
 void    Channel::addOperator(Client *client, std::string const& line) {
@@ -176,12 +186,22 @@ void    Channel::removeOperator(Client *client, std::string const& line) {
     } else {
         std::cout << client->getNick() << " is not an operator" << std::endl;  
     }
+    (void) line;
 }
 
 void    Channel::setLimitUser(Client *client, std::string const& limit) {
+    if (limit.empty()) {
+        std::cout << "Uncorrect value limit" << std::endl;
+        return ;
+    }
     _maxUsers = std::atoi(limit.c_str());
+    std::cout << "Channel limit is now " << limit << std::endl;
+    (void) client;
 }
 
-void    Channel::removeLimitUser(Client *client, std::string const& line) {  
+void    Channel::removeLimitUser(Client *client, std::string const& line) {
     _maxUsers = MAX_CLIENTS;
+    std::cout << "Channel limit has been removed" << std::endl;
+    (void) client;
+    (void) line;
 }

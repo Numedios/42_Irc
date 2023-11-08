@@ -35,6 +35,7 @@ void createChannel(const std::string& name, Client& client, Serveur& serveur)
 
     Client *clientPtr = &client;
     channel.setOperator(clientPtr);
+   channel.fillModesMap();
     serveur.addChannel(name, channel);
 
     std::string response;
