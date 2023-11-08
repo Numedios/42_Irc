@@ -10,11 +10,11 @@ void fillCommandMapAuth(std::map<std::string, FunctionPtr>& commands);
 
 Serveur::Serveur(int port, char *password) : _port(port), _password(password) 
 {
+    _numClients = 0;
     _serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (_serverSocket == -1) {
         std::cerr << "Error creating socket" << std::endl;
         perror("socket");
-        exit(EXIT_FAILURE);
         return;
     }
 
@@ -27,7 +27,6 @@ Serveur::Serveur(int port, char *password) : _port(port), _password(password)
     {
         std::cerr << "Error binding" << std::endl;
         close(_serverSocket);
-        exit(0); // a enlever maybe
         return;
     }
 
@@ -35,7 +34,7 @@ Serveur::Serveur(int port, char *password) : _port(port), _password(password)
         std::cerr << "Error listening" << std::endl;
         close(_serverSocket);
         perror("listen");
-        exit(EXIT_FAILURE);
+        return;
     }
 
     fds[0].fd = _serverSocket;
@@ -55,7 +54,7 @@ void Serveur::printInfoServeur()
 
 void Serveur::run() 
 {
-    while (true) 
+    while (g_kill == false) 
     {
         int numEvents = poll(fds, _numClients, 0); // verifier le retour de numEvents
         if (fds[0].revents & POLLIN) 
@@ -159,6 +158,7 @@ void Serveur::handleClientDisconnect(int index, std::string reason)
         fds[i] = fds[i + 1];
     }
     _numClients--;
+    delete client;
     getClients().erase(fd);
     allClientIndexDown(index);
 }

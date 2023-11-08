@@ -29,6 +29,6 @@ int handleMode(const std::string& line, Client& client, Serveur& serveur)
             sendResponse(client, serveur, response);
         }
         c->findMode(&client, args[2], args.size() > 3 ? args[3] : "");
-    }    
+    }
     return (0);
 }

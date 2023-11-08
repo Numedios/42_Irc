@@ -18,6 +18,8 @@
 #include "Channel.hpp"
 #include "Responses.hpp"
 
+extern bool	g_kill;
+
 class Serveur;
 
 typedef int (*FunctionPtr)(const std::string&, Client&, Serveur&);

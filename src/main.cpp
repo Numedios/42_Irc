@@ -20,12 +20,15 @@ struct sockaddr_in {
 #include <signal.h>
 #include "../include/Serveur.hpp"
 
+bool	g_kill = false;
+
 Serveur server;
 
 void    handle_sigint(int sig) {
     server.closeServer();
     (void) sig;
-    exit(0);
+    g_kill = true;
+    return ;
 }
 
 int main(int argc, char **argv)
@@ -36,7 +39,10 @@ int main(int argc, char **argv)
         return (0);
     }
     Serveur server = Serveur(std::atoi(argv[1]), argv[2]);
-
+    if (server.getNumClients() == 0)
+    { 
+        return (1);
+    }
     struct sigaction sa;
     sa.sa_handler = handle_sigint;
     sa.sa_flags = 0;
@@ -44,7 +50,7 @@ int main(int argc, char **argv)
 
     if (sigaction(SIGINT, &sa, NULL) == -1) {
         perror("Erreur lors de l'installation du gestionnaire SIGINT");
-        exit(1);
+        return(1);
     }
     server.run();
     return 0;
