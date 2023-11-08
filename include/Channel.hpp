@@ -32,6 +32,18 @@ public:
     void setLimitUser(Client *client, std::string const& limit);
     void removeLimitUser(Client *client, std::string const& line);
 
+    Client * getClient(std::string client)
+    {
+        std::map<int, Client *>::iterator it = _clients.begin();
+
+        for (; it != _clients.end(); it++)
+        {
+            if (it->second->getNick() == client)
+                return (it->second);
+        }
+        return (it->second);
+    }
+
     Client * getOperator(std::string client)
     {
         std::map<int, Client *>::iterator it = _operators.begin();
