@@ -31,6 +31,8 @@ public:
     void removeOperator(Client *client, std::string const& line);
     void setLimitUser(Client *client, std::string const& limit);
     void removeLimitUser(Client *client, std::string const& line);
+    void removeTopicProtection(Client *client, const std::string& line);
+    void setTopicProtection(Client *client, const std::string& line);
 
     Client * getClient(std::string client)
     {
@@ -186,6 +188,7 @@ private:
 	std::string				_topic;
 	std::string				_key;
 	std::map<int, Client *>	_operators;
+    bool                    _topicProtection;
 	bool					_inviteOnly;
 	std::map<int, Client *>	_clients;
 	std::map<int, Client *>	_invitedList;

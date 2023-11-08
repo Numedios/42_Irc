@@ -111,6 +111,8 @@ void Channel::kickClient(std::string client)
 void    Channel::fillModesMap() {
     _modes["+i"] = &Channel::setInvitation;
     _modes["-i"] = &Channel::removeInvitation;
+    _modes["+t"] = &Channel::setTopicProtection;
+    _modes["-t"] = &Channel::removeTopicProtection;
     _modes["+k"] = &Channel::setKeyPass;
     _modes["-k"] = &Channel::removeKeyPass;
     _modes["+o"] = &Channel::addOperator;
@@ -203,5 +205,25 @@ void    Channel::removeLimitUser(Client *client, std::string const& line) {
     _maxUsers = MAX_CLIENTS;
     std::cout << "Channel limit has been removed" << std::endl;
     (void) client;
+    (void) line;
+}
+
+void Channel::setTopicProtection(Client *client, const std::string& line) {
+    if (isOperator(client)) {
+        this->_topicProtection = true;
+        std::cout << "Topic protection is now enabled" << std::endl;
+    } else {
+        std::cout << client->getNick() << " is not an operator, cannot enable topic protection" << std::endl;
+    }
+    (void) line;
+}
+
+void Channel::removeTopicProtection(Client *client, const std::string& line) {
+    if (isOperator(client)) {
+        this->_topicProtection = false;
+        std::cout << "Topic protection is now disabled" << std::endl;
+    } else {
+        std::cout << client->getNick() << " is not an operator, cannot disable topic protection" << std::endl;
+    }
     (void) line;
 }
