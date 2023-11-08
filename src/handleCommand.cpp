@@ -11,9 +11,10 @@ int handleKill(const std::string& line, Client& client, Serveur& serveur);
 
 int handlePing(const std::string& line, Client& client, Serveur& serveur) 
 {
+    (void) line;
     std::string response = client.returnPrefixe() + PONG(client.getNick()) + "\r\n";
    
-   sendResponse(client, serveur, response);
+    sendResponse(client, serveur, response);
     return (0);
 }
 

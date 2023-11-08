@@ -59,6 +59,23 @@ public:
     void kickClientFromChannel(Client* client, Channel* channel);
     void closeServer();
 
+    ~Serveur() 
+    {
+        std::map<int, Client *>::iterator client = _clients.begin();
+        for (; client != _clients.end(); ++client) {
+            delete client->second;
+            _clients.erase(client);
+        }
+        for (int i = 0; i < _numClients; ++i) {
+        if (fds[i].fd != -1) {
+            if (close(fds[i].fd) == -1) {
+                // Vous pouvez gérer les erreurs de fermeture de fichier en fonction de vos besoins
+            }
+            fds[i].fd = -1; // Réinitialiser le descripteur de fichier après la fermeture
+        }
+    }
+    }
+
     void	kickClientFromAllChannelsWithJoin(Client* client, std::string reason)
     {
         std::vector<Channel *>	channelsWhereClientIs;

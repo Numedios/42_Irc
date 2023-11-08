@@ -15,7 +15,7 @@ std::string getNthWord(const std::string& input, int place) {
         words.push_back(word);
     }
 
-    if (place >= 0 && place < words.size()) {
+    if (place >= 0 && place < (int) words.size()) {
         return words[place];
     } else {
         return ""; // Ou une autre valeur par défaut selon votre besoin

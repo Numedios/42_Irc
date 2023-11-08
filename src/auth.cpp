@@ -27,6 +27,7 @@
 
 int handleCapLS(const std::string& line, Client& client, Serveur& serveur) 
 {
+    (void) line;
     if (client.getAuthState() == Client::NotAuthenticated) {
         std::ostringstream oss;
         oss << "CAP * LS :" << MAX_CLIENTS << "\n";

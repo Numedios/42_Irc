@@ -9,7 +9,7 @@ NAME = irc
 #==============================================================================#
 
 CXX = c++ 
-CXXFLAGS = -std=c++98
+CXXFLAGS = -Wall -Werror -Wextra -std=c++98
 DFLAGS = -MMD
 MKDIR = mkdir -p
 RM = rm -f
