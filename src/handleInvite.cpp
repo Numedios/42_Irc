@@ -9,6 +9,16 @@ int handleInvite(const std::string& line, Client& client, Serveur& serveur)
         sendResponse(client, serveur, response);
         return 1;
     }
+
+    std::string channelStr = args[2];
+    Channel* channel = serveur.getChannel(channelStr);
+    if (channel->checkIfClientOperator(client.getNick()))
+    {
+        std::string response = client.returnPrefixe() + ERR_CHANOPRIVSNEEDED(channelStr) + "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
+    }
+
     std::string nicknameStr = args[1];
     if (serveur.getClient(nicknameStr) == NULL)
     {
@@ -18,8 +28,7 @@ int handleInvite(const std::string& line, Client& client, Serveur& serveur)
     }
 
     Client * targetClient = serveur.getClient(nicknameStr);
-    std::string channelStr = args[2];
-    Channel* channel = serveur.getChannel(channelStr);
+    
     if (channel)
     {
         if (channel->checkIfClientInChannel(client.getNick()) == 1)

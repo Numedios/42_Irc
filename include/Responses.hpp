@@ -39,13 +39,13 @@
 # define RPL_ENDOFWHO(channel) ("315 " + channel + " :End of WHO list")
 # define RPL_LIST(channel, visible, topic) "322 " + channel + " " + visible + " :" + topic
 # define RPL_LISTEND() "323:End of LIST"
-# define RPL_CHANNELMODEIS(channel, mode, modeParams) "324" + channel + " " + mode + " " + modeParams
+# define RPL_CHANNELMODEIS(channel, mode, modeParams) "324 " + channel + " " + mode + " " + modeParams
 # define RPL_CREATIONTIME(client, channel, creationtime) "329 " + client + " " + channel + " " + creationtime
-# define RPL_NOTOPIC(channel) "3 31" + channel + " :No topic is set"
+# define RPL_NOTOPIC(channel) "331" + channel + " :No topic is set"
 # define RPL_TOPIC(channel, topic, client) "332 " + client +  " " + channel + " :" + topic // join
 # define RPL_TOPICWHOTIME(client, channel, whoset, setat) "333 " + client + " " + channel + " " + whoset + " " + setat
-# define RPL_INVITING(channel, nick) "341" + channel + " " + nick
-# define RPL_VERSION(version, debuglevel, server) "351" + version + "." + debuglevel + " " + server
+# define RPL_INVITING(channel, nick) "341 " + channel + " " + nick
+# define RPL_VERSION(version, debuglevel, server) "351 " + version + "." + debuglevel + " " + server
 # define RPL_WHOREPLY(channel, user, host, server, nick, status, hopcount, realname) ("352" + channel + " " + user + " " + host + " " + server + " " + nick + " " + status + " " + ":" + hopcount + " " + realname);
 # define RPL_NAMREPLY(channel, users, ops) "353 " + users + " = " + channel + " :" + ops // join
 # define RPL_ENDOFNAMES(channel, users) "366 " + users + " " + channel + " :End of /NAMES list" // join
@@ -55,7 +55,7 @@
 # define RPL_MOTD(text) "372:- " + text
 # define RPL_ENDOFMOTD() "376:End of MOTD command"
 # define RPL_YOUREOPER() "381:You are now an IRC operator"
-# define RPL_REHASHING(configfile) "382" + configfile + " :Rehashing"
+# define RPL_REHASHING(configfile) "382 " + configfile + " :Rehashing"
 
 # define ERR_NOSUCHNICK(nickname) "401 " + nickname + " :No such nick/channel"
 # define ERR_NOSUCHSERVER(servername) "402 " + servername + " :No such server"

@@ -50,8 +50,17 @@ int handleKick(const std::string& line, Client& client, Serveur& serveur)
         sendResponse(client, serveur, response);
         return 1;
     } 
+    std::string channelName = args[1];
+    Channel* channelParse = serveur.getChannel(channelName);
+    if (channelParse->checkIfClientOperator(client.getNick()))
+    {
+        std::string response = client.returnPrefixe() + ERR_CHANOPRIVSNEEDED(channelName) + "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
+    }
+
+
     std::string userkick = args[2];
-    std::string channelName  = args[1];
     std::string reason   = createReason(line, 2);
     Channel& channel = *serveur.getChannel(channelName);
     std::vector<std::string> channels_name = multipleParams(channelName);
