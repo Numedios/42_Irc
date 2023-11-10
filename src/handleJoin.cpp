@@ -5,20 +5,22 @@ void joinChannel(Channel& channel, Client& client, Serveur& serveur)
     std::string response;
     std::string name = channel.getChannelName();
 
-    if (channel.getInviteStatus() == true && channel.checkIfClientInvited(client.getNick()) == 1)
+    if (channel.getInviteStatus() == true)
     {
-        response = client.returnPrefixe() + ERR_INVITEONLYCHAN(client.getNick(), name) + "\r\n";
-        sendResponse(client, serveur, response);
-        return ;
+        if ( channel.checkIfClientInvited(client.getNick()) == 1)
+        {
+            response = client.returnPrefixe() + ERR_INVITEONLYCHAN(client.getNick(), name) + "\r\n";
+            sendResponse(client, serveur, response);
+            return ;
+        }
+        else
+            channel.delInvitedClient(&client);
     }
-
     if (channel.getOperators().empty())
         channel.setOperator(&client);
     else
         channel.addClient(&client);
-
     
-
     response = client.returnPrefixe() + RPL_NAMREPLY(name, client.getNick(), channel.sendAllClientsNames()) + "\r\n";
     sendResponse(client, serveur, response);
 
