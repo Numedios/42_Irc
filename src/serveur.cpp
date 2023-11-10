@@ -261,8 +261,8 @@ void	Serveur::deleteChannel(std::string name)
 void	Serveur::kickClientFromChannel(Client* client, Channel* channel)
 {
     std::cout << "kickClientFromChannel victim" << std::endl;
-	channel->kickClient(client->getNick() && channel->getOperators().size() == 0);
-	if (channel->getClients().size() == 0)
+	channel->kickClient(client->getNick());
+	if (channel->getClients().size() == 0  && channel->getOperators().size() == 0)
 		this->deleteChannel(channel->getChannelName());
 }
 
