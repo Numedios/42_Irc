@@ -133,10 +133,7 @@ public:
     }
 
     void	delInvitedClient(Client* client) {
-        if (isClientInvited(client))
-            return ;
-
-        this->_invitedList[client->getSocket()] = client;
+        _invitedList.erase(client->getSocket());
     }
 
     void setTopic(std::string name)
