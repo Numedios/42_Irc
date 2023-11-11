@@ -3,10 +3,20 @@
 
 int handlePrivmsg(const std::string& line, Client& client, Serveur& serveur)
 {
+	std::vector<std::string> args = createArg(line);
+
+    if (args.size() < 2) 
+    {
+        std::string response = client.returnPrefixe() + ERR_NEEDMOREPARAMS(args[0]) + "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
+    } 
+
     std::string response;
-    std::vector<std::string> args = createArg(line);
     std::string message = args[args.size() - 1];
     std::string	target = args[1];
+	std::string reason   = createReason(line, 1);
+
 
 	std::cout << "PRIVMSG" << std::endl;
 	if (message.empty())
@@ -41,7 +51,7 @@ int handlePrivmsg(const std::string& line, Client& client, Serveur& serveur)
 		{
 			if ((*it).second->getNick() != client.getNick())
             {
-				response = client.returnPrefixe() + "PRIVMSG " + target  + " " + message + "\r\n";
+				response = client.returnPrefixe() + "PRIVMSG " + target  + " " + reason + "\r\n";
                 sendResponse(*it->second, serveur, response);
             }
 		}
@@ -49,7 +59,7 @@ int handlePrivmsg(const std::string& line, Client& client, Serveur& serveur)
 		{
 			if ((*it).second->getNick() != client.getNick())
             {
-				response = client.returnPrefixe() + "PRIVMSG " + target  + " " + message + "\r\n";
+				response = client.returnPrefixe() + "PRIVMSG " + target  + " " + reason + "\r\n";
                 sendResponse(*it->second, serveur, response);
             }
 		}
@@ -63,7 +73,7 @@ int handlePrivmsg(const std::string& line, Client& client, Serveur& serveur)
     		sendResponse(client, serveur, response);
 			return 1;
 		}
-	    response = client.returnPrefixe()  + "PRIVMSG " + target + " " + message + "\r\n";
+	    response = client.returnPrefixe()  + "PRIVMSG " + target + " " + reason + "\r\n";
         sendResponse(*serveur.getClient(target), serveur, response);
 	}
     return (0);
