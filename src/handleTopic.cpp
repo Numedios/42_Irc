@@ -5,12 +5,19 @@ int handleTopic(const std::string& line, Client& client, Serveur& serveur)
 {
     std::string response;
     std::vector<std::string> args = createArg(line);
+
     if (args.size() < 2) 
     {
         std::string response = client.returnPrefixe() + ERR_NEEDMOREPARAMS(args[0]) + "\r\n";
         sendResponse(client, serveur, response);
         return 1;
-    } 
+    }
+    if (args[1][0] != '#')
+    {
+        std::string response = client.returnPrefixe() + ERR_NOSUCHCHANNEL(args[1]) + "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
+    }
     std::string channelStr = args[1];
     Channel* channel = serveur.getChannel(channelStr);
     if (channel->checkIfClientOperator(client.getNick()))
@@ -19,7 +26,6 @@ int handleTopic(const std::string& line, Client& client, Serveur& serveur)
         sendResponse(client, serveur, response);
         return 1;
     }
-
 
     //std::cout << "channel name = " << channel->getChannelName() << std::endl;
     if (!channel || channel->checkIfClientInChannel(client.getNick()))
