@@ -166,7 +166,7 @@ int handleNick(const std::string& line, Client& client, Serveur& serveur)
         sendResponse(client, serveur, response);
         return 1;
 	}
-    std::string response = ": NICK :" + args[1] + "\r\n";
+    std::string response = " NICK :" + args[1] + "\r\n";
     client.setNick(args[1]);
     sendResponse(client, serveur, response);
     serveur.addHistoryChat(create_message(client, ":SERVER", client.getNick() + "(" +  convertIntToString(client.getSocket()) + ")" + " has been connected.\n"));
