@@ -8,6 +8,7 @@ int handleTopic(const std::string& line, Client& client, Serveur& serveur);
 int handleNotice(const std::string& line, Client& client, Serveur& serveur);
 int handlePrivmsg(const std::string& line, Client& client, Serveur& serveur);
 int handleKill(const std::string& line, Client& client, Serveur& serveur);
+int handleNick(const std::string& line, Client& client, Serveur& serveur);
 
 int handlePing(const std::string& line, Client& client, Serveur& serveur) 
 {
@@ -32,4 +33,5 @@ void fillCommandMap(std::map<std::string, FunctionPtr>& commands)
     commands["NOTICE"] = handleNotice;
     commands["PRIVMSG"] = handlePrivmsg;
     commands["kill"] = handleKill;
+    commands["NICK"] = handleNick;
 }
