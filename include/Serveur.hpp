@@ -21,8 +21,12 @@
 extern bool	g_kill;
 
 class Serveur;
+class Client;
+class Channel;
 
 typedef int (*FunctionPtr)(const std::string&, Client&, Serveur&);
+typedef int (*ModeFunction)(std::vector<std::string>&, Client&, Serveur&, Channel&);
+void fillModesMap(std::map<std::string, ModeFunction>& modes);
 void fillCommandMapAuth(std::map<std::string, FunctionPtr>& commands);
 void fillCommandMap(std::map<std::string, FunctionPtr>& commands);
 std::string getNthWord(const std::string& input, int place);
@@ -36,9 +40,8 @@ std::vector<std::string> createArg(const std::string& line);
 void printVector(std::vector<std::string>& vec);
 int handleJoin(const std::string& line, Client& client, Serveur& serveur);
 std::string createReason(const std::string& line, int place);
+std::string createReasonMode(const std::string& line, int place);
 
-class Client;
-class Channel;
 
 const int MAX_CLIENTS = 10;
 

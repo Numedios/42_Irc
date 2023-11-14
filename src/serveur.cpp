@@ -186,13 +186,13 @@ int Serveur::processAuthenticationManagement(int index)
         {
             if (it->second(frontMessage.c_str() , *client, *this) == 1)
             {
-                addHistoryChat(create_message(*client, ":TESTIN", "Error : echec authentification\n"));
+                //addHistoryChat(create_message(*client, ":TESTIN", "Error : echec authentification\n"));
                 std::cout << "Error : echec authentification" << std::endl;
             }
         }
         else
         {
-            addHistoryChat(create_message(*client, ":TESTIN", "Error : echec commande introuvable authentification non faite\n"));
+            addHistoryChat(create_message(*client, ":TESTIN", "Error : echec commande introuvable ou authentification non faite\n"));
             std::cout << "Errror commande introuvable authentification non faite" << std::endl;
         }
         messageQueue.pop();
@@ -214,7 +214,7 @@ int Serveur::processCommandManagement(int index)
         {
             if (it->second(frontMessage.c_str() , *client, *this) == 1)
             {
-                addHistoryChat(create_message(*client, ":TESTIN", "Error : echec authentification\n"));
+                //addHistoryChat(create_message(*client, ":TESTIN", "Error : echec authentification\n"));
                 std::cout << "Error : echec authentification" << std::endl;
             }
         }

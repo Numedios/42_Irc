@@ -37,7 +37,7 @@ void createChannel(const std::string& name, Client& client, Serveur& serveur)
 
     Client *clientPtr = &client;
     channel.setOperator(clientPtr);
-   channel.fillModesMap();
+    //fillModesMap(channel.getMods());
     serveur.addChannel(name, channel);
 
     std::string response;
@@ -81,6 +81,13 @@ int handleJoin(const std::string& line, Client& client, Serveur& serveur)
     createChannel(name, client, serveur);
     return (0);
 }
+
+
+/*
+
+rajouter la gestion de key dans join
+
+*/
 
 
 /*

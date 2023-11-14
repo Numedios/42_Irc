@@ -141,38 +141,41 @@ static bool	isNicknameAlreadyInUse(Serveur& server, std::string nickname) {
 int handleNick(const std::string& line, Client& client, Serveur& serveur) 
 {
     std::vector<std::string> args = createArg(line);
-
-    if (client.isAuthenticated()  == true || client.getAuthState() != Client::Pass)
+    std::string response;
+    if (client.isAuthenticated()  != true && client.getAuthState() != Client::Pass)
     {
-        std::string response = client.returnPrefixe() + ERR_ALREADYREGISTRED() + "\r\n";
-        sendResponse(client, serveur, response);
         return 1;
     }
     if (args.size() < 2) 
     {
-        std::string response = client.returnPrefixe() + ERR_NEEDMOREPARAMS(args[0]) + "\r\n";
+        response = client.returnPrefixe() + ERR_NEEDMOREPARAMS(args[0]) + "\r\n";
         sendResponse(client, serveur, response);
         return 1;
-    } 
+    }
     std::string nickname = args[1];
 	if (!isNicknameProperlyFormatted(nickname))
     {
-        std::string response = client.returnPrefixe() + ERR_ERRONEUSNICKNAME(nickname) + "\r\n";
+        response = client.returnPrefixe() + ERR_ERRONEUSNICKNAME(nickname) + "\r\n";
         sendResponse(client, serveur, response);
         return 1;
     }
     if (isNicknameAlreadyInUse(serveur, nickname)) {
-        std::string response = client.returnPrefixe() + ERR_NICKNAMEINUSE(nickname) + "\r\n";
+        response = client.returnPrefixe() + ERR_NICKNAMEINUSE(nickname) + "\r\n";
         sendResponse(client, serveur, response);
         return 1;
 	}
-    std::string response = " NICK :" + args[1] + "\r\n";
+    if (client.isAuthenticated()  != true)
+        response = ": NICK :" + args[1] + "\r\n";
+    else 
+        response = client.returnPrefixe() + " NICK :" + args[1] + "\r\n";
     client.setNick(args[1]);
     sendResponse(client, serveur, response);
-    serveur.addHistoryChat(create_message(client, ":SERVER", client.getNick() + "(" +  convertIntToString(client.getSocket()) + ")" + " has been connected.\n"));
-    client.setAuthState(Client::Nick);
+    if (client.isAuthenticated()  != true)
+    {
+        serveur.addHistoryChat(create_message(client, ":SERVER", client.getNick() + "(" +  convertIntToString(client.getSocket()) + ")" + " has been connected.\n"));
+        client.setAuthState(Client::Nick);
+    }
     return 0;
-   
 }
 
 // int handleNick(const std::string& line, Client& client, Serveur& serveur) 

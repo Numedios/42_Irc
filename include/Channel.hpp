@@ -6,33 +6,44 @@
 #include <vector>
 #include <map>
 
+
+
 class Client;
+class Serveur;
+class Channel;
+
+typedef int (*ModeFunction)(std::vector<std::string>&, Client&, Serveur&, Channel&);
+void fillModesMap(std::map<std::string, ModeFunction>& modes);
+
+
+
 
 
 class Channel {
 public:
     Channel() : _name("") {}
-    Channel(const std::string& name) : _name(name), _topic(""), _key("") ,_inviteOnly(false) {}
+    Channel(const std::string& name) : _name(name), _topic(""), _key("") , _topicProtection(false), _inviteOnly(false) {
+        fillModesMap(_modes);
+    }
     std::string sendClientName(const Client& users);
     std::string sendAllClientsNames();
     int checkIfClientInChannel(Client* client);
     int checkIfClientInChannel(std::string client);
     void kickClient(std::string client);
-    typedef void (Channel::*ModeFunction)(Client*, const std::string&);
-
-    void fillModesMap();
-    void findMode(Client *client, std::string const& arg, std::string const& line);
     int  isOperator(Client *client);
-    void setInvitation(Client *client, std::string const& line);
-    void removeInvitation(Client *client, std::string const& line );
-    void setKeyPass(Client *client, std::string const& pass);
-    void removeKeyPass(Client *client, std::string const& pass);
-    void addOperator(Client *client, std::string const& line);
-    void removeOperator(Client *client, std::string const& line);
-    void setLimitUser(Client *client, std::string const& limit);
-    void removeLimitUser(Client *client, std::string const& line);
-    void removeTopicProtection(Client *client, const std::string& line);
-    void setTopicProtection(Client *client, const std::string& line);
+    void sendMessageToAll(std::string response,  Serveur& serveur);
+    //void fillModesMap();
+    //int  findMode(Client *client, const std::string &arg, const std::string &line, Serveur& serveur);
+    // void setInvitation(Client *client, std::string const& line);
+    // void removeInvitation(Client *client, std::string const& line );
+    // void setKeyPass(Client *client, std::string const& pass);
+    // void removeKeyPass(Client *client, std::string const& pass);
+    // void addOperator(Client *client, std::string const& line);
+    // void removeOperator(Client *client, std::string const& line);
+    // void setLimitUser(Client *client, std::string const& limit);
+    // void removeLimitUser(Client *client, std::string const& line);
+    // void removeTopicProtection(Client *client, const std::string& line);
+    // void setTopicProtection(Client *client, const std::string& line);
 
     Client * getClient(std::string client)
     {
@@ -136,6 +147,15 @@ public:
         _invitedList.erase(client->getSocket());
     }
 
+
+    void	delOperator(Client* client) {
+        _operators.erase(client->getSocket());
+    }
+
+    void	delClient(Client* client) {
+        _clients.erase(client->getSocket());
+    }
+
     void setTopic(std::string name)
     {
         _topic = name;
@@ -143,6 +163,16 @@ public:
 
     void setInviteStatus(bool status) { this->_inviteOnly = status; }
 
+    void setTopicProtection(bool status) {_topicProtection = status; }
+
+    void setKey(std::string key) 
+    { 
+        _key = key; 
+    }
+
+    void setMaxUsers(int max) {
+        _maxUsers = max;
+    }
 
 
     std::string& getChannelName(){
@@ -153,6 +183,10 @@ public:
         return _topic;
     }
 
+    std::string& getKey(){
+        return _key;
+    }
+
     std::map<int, Client *> getClients(){
         return _clients;
     }
@@ -160,6 +194,11 @@ public:
     std::map<int, Client *>	getOperators(){
         return _operators;
     }
+
+    std::map<std::string, ModeFunction>& getMods() {
+        return _modes;
+    }
+
 
     void setOperator(Client* client){
         _operators[client->getSocket()] = client;
@@ -173,8 +212,8 @@ public:
         return _inviteOnly; 
     }
 
-    void setMaxUsers(int max) {
-        _maxUsers = max;
+    bool getTopicStatus() { 
+        return _topicProtection; 
     }
 
     int getMaxUsers() { return _maxUsers; }
@@ -191,7 +230,6 @@ private:
 	std::map<int, Client *>	_invitedList;
     int                     _maxUsers;
     std::map<std::string, ModeFunction> _modes;
-
 };
 
 #endif

@@ -74,7 +74,7 @@
 # define ERR_NICKNAMEINUSE(nickname) "433 " + nickname + " :Nickname is already in use"
 # define ERR_NICKCOLLISION(nickname, username, host) "436" + nickname + " :Nickname collision KILL from " + username + "@" + host
 # define ERR_UNAVAILRESOURCE(nickchannel) "437 " + nickchannel + " :Nick/channel is temporarily unavailable"
-# define ERR_USERNOTINCHANNEL(nickname, channel) "441" + nickname + " " + channel + " :not on this channel"
+# define ERR_USERNOTINCHANNEL(nickname, channel) "441 " + nickname + " " + channel + " :not on this channel"
 # define ERR_NOTONCHANNEL(channel) "442 " + channel + " :You're not on that channel"
 # define ERR_USERONCHANNEL(username, channel) "443 " + username + " " + channel + " :is already on channel"
 # define ERR_NOTREGISTERED(client) "451 " + client + ": You have not registered"

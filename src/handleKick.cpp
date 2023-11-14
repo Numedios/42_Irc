@@ -21,6 +21,27 @@ std::string createReason(const std::string& line, int place)
     return reason.substr(0, reason.length() - 1);
 }
 
+std::string createReasonMode(const std::string& line, int place)
+{
+    std::istringstream iss(line);
+    std::string word;
+    std::string reason = "";
+    int i = 0;
+
+    while (iss >> word)
+    {
+        if (i > place)
+        {
+            if (i == place + 1)
+                reason += word + " ";
+            else
+                reason += word + " ";
+        }
+        i++;
+    }
+    return reason.substr(0, reason.length() - 1);
+}
+
 
 std::vector<std::string> multipleParams(std::string params)
 {
