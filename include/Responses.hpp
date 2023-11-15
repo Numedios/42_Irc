@@ -85,7 +85,7 @@
 # define ERR_UNKNOWNMODE(mode, channel) "472 " + mode + " :is unknown mode char to me for " + channel
 # define ERR_INVITEONLYCHAN(client, channel) "473 " + client +  " " + channel + " :Cannot join channel (+i)"
 # define ERR_BANNEDFROMCHAN(channel) "474 " + channel + " :Cannot join channel (+b)"
-# define ERR_BADCHANNELKEY(channel) "475 " + channel + " :Cannot join channel (+k)"
+# define ERR_BADCHANNELKEY(name, channel) "475 " + name + " " + channel + " :Cannot join channel (+k)"
 # define ERR_BADCHANMASK(channel) "476 " + channel + ": Bad Channel Mask"
 # define ERR_NOCHANMODES(channel) "477 " + channel + " :Channel doesn't support modes"
 # define ERR_NOPRIVILEGES() "481:Permission Denied- You're not an IRC operator"

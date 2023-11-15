@@ -208,6 +208,10 @@ public:
         _clients[client->getSocket()] = client;
     }
 
+    bool hasKey() const {
+        return !_key.empty();
+    }
+
     bool getInviteStatus() { 
         return _inviteOnly; 
     }
@@ -216,7 +220,8 @@ public:
         return _topicProtection; 
     }
 
-    int getMaxUsers() { return _maxUsers; }
+    int getMaxUsers() { 
+        return _maxUsers; }
 
 private:
 

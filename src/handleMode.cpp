@@ -193,38 +193,6 @@ int    removeOperator(std::vector<std::string>& args, Client& client, Serveur& s
     return 0;
 }
 
-/*
-
-<-- Received = MODE #lol +o said
-
---> send = :soso!sbelabba@127.0.0.1 MODE #lol +o said
---> send = :soso!sbelabba@127.0.0.1 MODE #lol +o said
-<-- Received = PRIVMSG #lol :sad
-
---> sendDest = :said!sbelabba@127.0.0.1 PRIVMSG #lol :sad
-
-<-- Received = MODE #lol +o said
-
---> sendReply = :soso!sbelabba@127.0.0.1 696 soso  soso@localhost #lol +o said :is already channel operator
-
-<-- Received = MODE #lol -o soso
-
---> send = :said!sbelabba@127.0.0.1 MODE #lol -o soso
---> send = :said!sbelabba@127.0.0.1 MODE #lol -o soso
-<-- Received = MODE #lol -o soso
-
---> sendReply = :said!sbelabba@127.0.0.1 696 said  said@localhost #lol -o soso :is no channel operator
-
-<-- Received = PRIVMSG #lol :sd
-
---> sendDest = :said!sbelabba@127.0.0.1 PRIVMSG #lol :sd
-
-
-*/
-
-
-
-
 
 
 int   setLimitUser(std::vector<std::string>& args, Client& client, Serveur& serveur, Channel& channel) 

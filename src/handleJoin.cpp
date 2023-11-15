@@ -1,9 +1,16 @@
 #include "../include/Serveur.hpp"
 
-void joinChannel(Channel& channel, Client& client, Serveur& serveur)
+void joinChannel(Channel& channel, Client& client, Serveur& serveur, std::string key)
 {
     std::string response;
     std::string name = channel.getChannelName();
+    
+
+    if (channel.hasKey() && channel.getKey() != key) {
+        response = client.returnPrefixe() + ERR_BADCHANNELKEY(client.getNick(), channel.getChannelName()) + "\r\n";
+        sendResponse(client, serveur, response);
+        return;
+    }
 
     if (channel.getInviteStatus() == true)
     {
@@ -31,13 +38,13 @@ void joinChannel(Channel& channel, Client& client, Serveur& serveur)
     sendResponse(client, serveur, response);
 }
 
+
 void createChannel(const std::string& name, Client& client, Serveur& serveur)
 {
     Channel channel = Channel(name);
 
     Client *clientPtr = &client;
     channel.setOperator(clientPtr);
-    //fillModesMap(channel.getMods());
     serveur.addChannel(name, channel);
 
     std::string response;
@@ -74,7 +81,10 @@ int handleJoin(const std::string& line, Client& client, Serveur& serveur)
     {
 
         std::cout << client.getNick() << " join channel :" << name << std::endl;
-        joinChannel(*serveur.getChannel(name) , client, serveur);
+        if (args.size() > 3) 
+            joinChannel(*serveur.getChannel(name), client, serveur, args[3]);
+        else 
+            joinChannel(*serveur.getChannel(name), client, serveur, "");
         return (1);
     }
     std::cout << client.getNick() << " create new channel :" << name << std::endl;
