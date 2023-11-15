@@ -52,14 +52,28 @@ void Serveur::printInfoServeur()
     std::cout << "_password      = *" << _password << "*" << std::endl;
 }
 
-void Serveur::run() 
+void Serveur::run()
 {
     while (g_kill == false) 
     {
         int numEvents = poll(fds, _numClients, 0); // verifier le retour de numEvents
+        // if (numEvents == -1)
+        // {
+        //     std::cout << "erreur numevents" << std::endl;
+        // }
         if (numEvents == -1)
         {
-            std::cout << "erreur numevents" << std::endl;
+            if (errno == EINTR) 
+            {
+                // poll interrupted by signal, check if we need to kill the server
+                if (g_kill) break;
+                continue; // Otherwise, continue the loop
+            }
+            else 
+            {
+                std::cerr << "Error in poll: " << strerror(errno) << std::endl;
+                break; // For other errors, break the loop
+            }
         }
         if (fds[0].revents & POLLIN) 
         {
@@ -85,7 +99,9 @@ void Serveur::run()
                 }
             }
        }
+       if (g_kill) break; 
     }
+    closeServer();
 }
 
 int Serveur::acceptClient()
@@ -266,12 +282,22 @@ void	Serveur::kickClientFromChannel(Client* client, Channel* channel)
 		this->deleteChannel(channel->getChannelName());
 }
 
-void    Serveur::closeServer() {
-    std::map<int, Client *>::iterator client = _clients.begin();
-    for (; client != _clients.end(); ++client) {
-        delete client->second;
-        _clients.erase(client);
-    }
-    std::cout << "Goodbye" << std::endl;
-}
+// void    Serveur::closeServer() {
+//     std::map<int, Client *>::iterator client = _clients.begin();
+//     for (; client != _clients.end(); ++client) {
+//         delete client->second;
+//         _clients.erase(client);
+//     }
+//     std::cout << "Goodbye" << std::endl;
+// }
 
+void Serveur::closeServer() {
+    std::map<int, Client*>::iterator it = _clients.begin();
+    while (it != _clients.end()) {
+        delete it->second;  // Delete the client object
+        ++it;
+    }
+    _clients.clear();  // Clear the map after all clients are deleted
+    
+    // std::cout << "Goodbye" << std::endl;
+}

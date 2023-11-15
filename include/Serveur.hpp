@@ -8,8 +8,10 @@
 #include <poll.h>
 #include <unistd.h>
 #include <cstdio>
+#include <cerrno>
 #include <cstdlib>
 #include <cstring>
+#include <csignal>
 #include <queue>
 #include <typeinfo>
 #include <map>
