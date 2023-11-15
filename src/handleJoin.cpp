@@ -5,8 +5,15 @@ void joinChannel(Channel& channel, Client& client, Serveur& serveur, std::string
     std::string response;
     std::string name = channel.getChannelName();
     
-
-    if (channel.hasKey() && channel.getKey() != key) {
+    if (channel.getClients().size() == (size_t) channel.getMaxUsers())
+    {
+        response = client.returnPrefixe() + ERR_CHANNELISFULL(client.getNick(), name) + "\r\n";
+        sendResponse(client, serveur, response);
+        return;
+    }
+    if (channel.getKey() != key) {
+        std::cout <<" key = " << channel.getKey() << std::endl;
+        std::cout << key << std::endl;
         response = client.returnPrefixe() + ERR_BADCHANNELKEY(client.getNick(), channel.getChannelName()) + "\r\n";
         sendResponse(client, serveur, response);
         return;
@@ -81,8 +88,8 @@ int handleJoin(const std::string& line, Client& client, Serveur& serveur)
     {
 
         std::cout << client.getNick() << " join channel :" << name << std::endl;
-        if (args.size() > 3) 
-            joinChannel(*serveur.getChannel(name), client, serveur, args[3]);
+        if (args.size() > 2) 
+            joinChannel(*serveur.getChannel(name), client, serveur, args[2]);
         else 
             joinChannel(*serveur.getChannel(name), client, serveur, "");
         return (1);

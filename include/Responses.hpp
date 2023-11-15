@@ -81,7 +81,7 @@
 # define ERR_NEEDMOREPARAMS(command) (std::string ("461 ") + command + " :Not enough parameters")
 # define ERR_ALREADYREGISTRED() "462:Unauthorized command (already registered)"
 # define ERR_PASSWDMISMATCH() "464:Password incorrect"
-# define ERR_CHANNELISFULL(channel) "471 " + channel + " :Cannot join channel (+l)"
+# define ERR_CHANNELISFULL(name, channel) "471 " + name + " " + channel + " :Cannot join channel (+l)"
 # define ERR_UNKNOWNMODE(mode, channel) "472 " + mode + " :is unknown mode char to me for " + channel
 # define ERR_INVITEONLYCHAN(client, channel) "473 " + client +  " " + channel + " :Cannot join channel (+i)"
 # define ERR_BANNEDFROMCHAN(channel) "474 " + channel + " :Cannot join channel (+b)"

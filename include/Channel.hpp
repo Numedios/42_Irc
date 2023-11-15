@@ -199,7 +199,6 @@ public:
         return _modes;
     }
 
-
     void setOperator(Client* client){
         _operators[client->getSocket()] = client;
     }
