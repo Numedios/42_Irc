@@ -135,8 +135,8 @@ int     addOperator(std::vector<std::string>& args, Client& client, Serveur& ser
         sendResponse(client, serveur, response);
         return (1);
     }
-    channel.delClient(&client);
-    channel.setOperator(&client);
+    channel.delClient(target);
+    channel.setOperator(target);
     response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
     channel.sendMessageToAll(response, serveur);
     std::cout << target->getNick() << " is now an operator" << std::endl;
@@ -164,7 +164,7 @@ int    removeOperator(std::vector<std::string>& args, Client& client, Serveur& s
         sendResponse(client, serveur, response);
         return (1);
     }
-    if (channel.getClient(target->getNick()) == NULL)
+    if (channel.getOperator(target->getNick()) == NULL)
     {
         response = client.returnPrefixe() + ERR_USERNOTINCHANNEL(args[3], channel.getChannelName()) + "\r\n";
         sendResponse(client, serveur, response);
@@ -182,8 +182,9 @@ int    removeOperator(std::vector<std::string>& args, Client& client, Serveur& s
         sendResponse(client, serveur, response);
         return (1);
     }
-    channel.delOperator(&client);
-    channel.addClient(&client);
+    channel.delOperator(target);
+    channel.addClient(target);
+    response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
     channel.sendMessageToAll(response, serveur);
     std::cout << (&client)->getNick() << " is no more an operator" << std::endl;
     (void) client;
@@ -234,7 +235,7 @@ int setTopicProtection(std::vector<std::string>& args, Client& client, Serveur& 
 
 int removeTopicProtection(std::vector<std::string>& args, Client& client, Serveur& serveur, Channel& channel) 
 {
-    channel.setTopicProtection(true);
+    channel.setTopicProtection(false);
     std::cout << "Topic protection is now disabled" << std::endl;
     (void) client;
     (void) serveur;
