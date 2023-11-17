@@ -16,6 +16,18 @@ std::string getLastWord(const std::string& input) {
         return "";
 }
 
+std::string concatenateWords(const std::vector<std::string>& args) {
+    std::string result;
+
+    for (std::vector<std::string>::const_iterator it = args.begin(); it != args.end(); ++it) {
+        result += *it;
+        if (it + 1 != args.end()) {
+            result += " ";
+        }
+    }
+
+    return result;
+}
 
 /*
 
@@ -37,7 +49,7 @@ int    findMode(Client *client, std::vector<std::string> args, Serveur& serveur,
         (func)(args, *client, serveur, channel);
     } else {
         std::cout << "Undefined mode" << std::endl;
-        response = client->returnPrefixe() + ERR_UNKNOWNMODE(args[2], args[1]) + "\r\n";
+        std::string  response = client->returnPrefixe() + ERR_UNKNOWNMODE(args[2], args[1]) + "\r\n";
         sendResponse(*client, serveur, response);
         return (1);
     }
@@ -48,6 +60,8 @@ int    setInvitation(std::vector<std::string>& args, Client& client, Serveur& se
 {
     channel.setInviteStatus(true);
     std::cout << "Serveur is now on invitation mode" << std::endl;
+    std::string  response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
+    channel.sendMessageToAll(response, serveur);
     (void) args;
     (void) client;
     (void)(serveur);
@@ -59,6 +73,8 @@ int   removeInvitation(std::vector<std::string>& args, Client& client, Serveur& 
 {
     std::cout << "Invitation mode has been removed" << std::endl;
     channel.setInviteStatus(false);
+    std::string  response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
+    channel.sendMessageToAll(response, serveur);
     (void) serveur;
     (void) channel;
     (void) args;
@@ -74,6 +90,8 @@ int    setKeyPass(std::vector<std::string>& args, Client& client, Serveur& serve
     }
     channel.setKey(args[3]);
     std::cout << "Password has been updated" << std::endl;
+    std::string response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
+    channel.sendMessageToAll(response, serveur);
     (void) serveur;
     (void) channel;
     (void) args;
@@ -81,24 +99,14 @@ int    setKeyPass(std::vector<std::string>& args, Client& client, Serveur& serve
     return 0;
 }
 
-std::string concatenateWords(const std::vector<std::string>& args) {
-    std::string result;
-
-    for (std::vector<std::string>::const_iterator it = args.begin(); it != args.end(); ++it) {
-        result += *it;
-        if (it + 1 != args.end()) {
-            result += " ";
-        }
-    }
-
-    return result;
-}
 
 
 int    removeKeyPass(std::vector<std::string>& args, Client& client, Serveur& serveur, Channel& channel)
 {
     channel.setKey("");
     std::cout << "Password has ben removed" << std::endl;
+    std::string response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
+    channel.sendMessageToAll(response, serveur);
     (void) client;
     (void) serveur;
     (void) channel;
@@ -204,6 +212,8 @@ int   setLimitUser(std::vector<std::string>& args, Client& client, Serveur& serv
     }
     channel.setMaxUsers(std::atoi(args[3].c_str()));
     std::cout << "Channel limit is now " << args[3] << std::endl;
+    std::string  response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
+    channel.sendMessageToAll(response, serveur);
     (void) client;
     (void) serveur;
     (void) channel;
@@ -215,6 +225,8 @@ int    removeLimitUser(std::vector<std::string>& args, Client& client, Serveur& 
 {
     channel.setMaxUsers(MAX_CLIENTS);
     std::cout << "Channel limit has been removed" << std::endl;
+    std::string  response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
+    channel.sendMessageToAll(response, serveur);
     (void) client;
     (void) serveur;
     (void) channel;
@@ -226,6 +238,8 @@ int setTopicProtection(std::vector<std::string>& args, Client& client, Serveur& 
 {
     channel.setTopicProtection(true);
     std::cout << "Topic protection is now enabled" << std::endl;
+    std::string  response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
+    channel.sendMessageToAll(response, serveur);
     (void) client;
     (void) serveur;
     (void) channel;
@@ -237,11 +251,12 @@ int removeTopicProtection(std::vector<std::string>& args, Client& client, Serveu
 {
     channel.setTopicProtection(false);
     std::cout << "Topic protection is now disabled" << std::endl;
+    std::string  response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
+    channel.sendMessageToAll(response, serveur);
     (void) client;
     (void) serveur;
     (void) channel;
     (void) args;
-    (void) client;
     return 0;
 }
 
