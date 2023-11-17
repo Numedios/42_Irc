@@ -170,6 +170,10 @@ public:
         _key = key; 
     }
 
+    void clearKey() {
+        _key.clear();
+    }
+    
     void setMaxUsers(int max) {
         _maxUsers = max;
     }

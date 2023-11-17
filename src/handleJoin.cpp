@@ -11,9 +11,7 @@ void joinChannel(Channel& channel, Client& client, Serveur& serveur, std::string
         sendResponse(client, serveur, response);
         return;
     }
-    if (channel.getKey() != key) {
-        std::cout <<" key = " << channel.getKey() << std::endl;
-        std::cout << key << std::endl;
+    if (!channel.getKey().empty() && channel.getKey() != key) {
         response = client.returnPrefixe() + ERR_BADCHANNELKEY(client.getNick(), channel.getChannelName()) + "\r\n";
         sendResponse(client, serveur, response);
         return;

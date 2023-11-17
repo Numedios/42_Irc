@@ -120,7 +120,7 @@ int    removeKeyPass(std::vector<std::string>& args, Client& client, Serveur& se
         sendResponse(client, serveur, response);
         return (1);
     }
-    channel.setKey("");
+    channel.clearKey();
     std::string response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
     channel.sendMessageToAll(response, serveur);
     (void) client;
@@ -134,8 +134,6 @@ int     addOperator(std::vector<std::string>& args, Client& client, Serveur& ser
 {
     std::string response;
     if (args.size() != 4) {
-        response = client.returnPrefixe() + ERR_INVALIDMODEPARAM(client.getNick(), client.getNick() + "@localhost" , args[1], args[2], "mode parameter needed") + "\r\n";
-        sendResponse(client, serveur, response);
         response = client.returnPrefixe() + ERR_INVALIDMODEPARAM(client.getNick(), client.getNick() + "@localhost" , args[1], args[2], "invalid number of mode parameters") + "\r\n";
         sendResponse(client, serveur, response);
         return (1);
@@ -174,8 +172,6 @@ int    removeOperator(std::vector<std::string>& args, Client& client, Serveur& s
 {
     std::string response;
     if (args.size() != 4) {
-        response = client.returnPrefixe() + ERR_INVALIDMODEPARAM(client.getNick(), client.getNick() + "@localhost" , args[1], args[2], "mode parameter needed") + "\r\n";
-        sendResponse(client, serveur, response);
         response = client.returnPrefixe() + ERR_INVALIDMODEPARAM(client.getNick(), client.getNick() + "@localhost" , args[1], args[2], "invalid number of mode parameters") + "\r\n";
         sendResponse(client, serveur, response);
         return (1);
