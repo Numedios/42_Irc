@@ -81,7 +81,6 @@ int handleKick(const std::string& line, Client& client, Serveur& serveur)
         return 1;
     }
 
-
     std::string userkick = args[2];
     std::string reason   = createReason(line, 2);
     Channel& channel = *serveur.getChannel(channelName);
@@ -92,7 +91,7 @@ int handleKick(const std::string& line, Client& client, Serveur& serveur)
 	{
 		if ((*it)[0] != '#')
         {
-            response = client.returnPrefixe() + ERR_BADCHANMASK(*it) + "\r\n";
+            response = serveur.getClient(userkick)->returnPrefixe() + ERR_BADCHANMASK(*it) + "\r\n";
             sendResponse(client, serveur, response);
         	return 1;
         }
@@ -128,7 +127,7 @@ int handleKick(const std::string& line, Client& client, Serveur& serveur)
         channel.kickClient(userkick);
         return (0);
     }
-    response = client.returnPrefixe() + ERR_NOTONCHANNEL(channelName) + "\r\n";
+    response = client.returnPrefixe() + ERR_USERNOTINCHANNEL(channel.getChannelName(), userkick) + "\r\n";
     sendResponse(client, serveur, response);
     return (1);
 }
