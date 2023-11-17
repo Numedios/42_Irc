@@ -1,5 +1,6 @@
 #include "../include/Serveur.hpp"
 
+std::string concatenateWords(const std::vector<std::string>& args);
 
 int handleTopic(const std::string& line, Client& client, Serveur& serveur)
 {
@@ -37,7 +38,10 @@ int handleTopic(const std::string& line, Client& client, Serveur& serveur)
         return 1;
     }
 
-    std::string newTopic = args[args.size() - 1];
+   // std::string newTopic = args[args.size() - 1];
+    args.erase(args.begin(), args.begin() + 2);
+
+    std::string newTopic = concatenateWords(args);
     std::map<int, Client *> clients = channel->getClients();
     std::map<int, Client *> operators = channel->getOperators();
 	std::map<int, Client *>::iterator it;
@@ -58,9 +62,9 @@ int handleTopic(const std::string& line, Client& client, Serveur& serveur)
 	}
     else
     {
-        std::string topic = args[args.size() - 1];
-        topic.erase(topic.begin());
-        channel->setTopic(topic);
+        //std::string topic = args[args.size() - 1];
+        //topic.erase(topic.begin());
+        channel->setTopic(newTopic);
         for (it = clients.begin(); it != clients.end(); it++)
         {
             response = it->second->returnPrefixe() + RPL_TOPIC(channel->getChannelName(), channel->getTopic(), it->second->getNick()) + "\r\n";
