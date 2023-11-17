@@ -46,9 +46,8 @@ int    findMode(Client *client, std::vector<std::string> args, Serveur& serveur,
 
     if (it != channel.getMods().end()) {
         ModeFunction func = it->second;
-        if ((func)(args, *client, serveur, channel)) 
-            return (1);
-
+        (func)(args, *client, serveur, channel);
+        return (1);
     } else {
         std::cout << "Undefined mode" << std::endl;
         std::string  response = client->returnPrefixe() + ERR_UNKNOWNMODE(args[2], args[1]) + "\r\n";
@@ -66,7 +65,7 @@ int    setInvitation(std::vector<std::string>& args, Client& client, Serveur& se
     (void) args;
     (void) client;
     (void)(serveur);
-    return (1);
+    return (0);
 }
 
 
@@ -214,6 +213,12 @@ int   setLimitUser(std::vector<std::string>& args, Client& client, Serveur& serv
         sendResponse(client, serveur, response);
         return (1);
     }
+    int limit = std::atoi(args[3].c_str());
+    if (limit < 0 || limit > MAX_CLIENTS) {
+        std::string response = client.returnPrefixe() + ERR_INVALIDMODEPARAM(client.getNick(), client.getNick() + "@localhost" , args[1], args[2], "invalid mode parameters") + "\r\n";
+        sendResponse(client, serveur, response);
+        return (1);
+    } 
     channel.setMaxUsers(std::atoi(args[3].c_str()));
     std::string  response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
     channel.sendMessageToAll(response, serveur);
@@ -317,8 +322,12 @@ int handleMode(const std::string& line, Client& client, Serveur& serveur)
         }
         if (args[2][0] == '+' || args[2][0] == '-')
         {
+            if (args[2][1] == '+' || args[2][1] == '-')
+            {
             if (findMode(&client, args, serveur, *channel) == 1)
+            {
                 return 1;
+            }
         }
         else
         {
