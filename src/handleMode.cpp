@@ -1,4 +1,5 @@
 #include "../include/Serveur.hpp"
+#include <cctype> // Pour isdigit
  
 
 std::string getLastWord(const std::string& input) {
@@ -27,6 +28,18 @@ std::string concatenateWords(const std::vector<std::string>& args) {
     }
 
     return result;
+}
+
+bool isNumber(const std::string& str) {
+    if (str.empty()) return false;
+
+    for (std::string::const_iterator it = str.begin(); it != str.end(); ++it) {
+        if (!isdigit(*it)) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 /*
@@ -213,8 +226,7 @@ int   setLimitUser(std::vector<std::string>& args, Client& client, Serveur& serv
         sendResponse(client, serveur, response);
         return (1);
     }
-    int limit = std::atoi(args[3].c_str());
-    if (limit < 0 || limit > MAX_CLIENTS) {
+    if (!isNumber(args[3])) {
         std::string response = client.returnPrefixe() + ERR_INVALIDMODEPARAM(client.getNick(), client.getNick() + "@localhost" , args[1], args[2], "invalid mode parameters") + "\r\n";
         sendResponse(client, serveur, response);
         return (1);
