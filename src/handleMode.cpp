@@ -296,6 +296,7 @@ void fillModesMap(std::map<std::string, ModeFunction>& modes)
 }
 
 
+
 int handleMode(const std::string& line, Client& client, Serveur& serveur) 
 {
     std::vector<std::string> args = createArg(line);
@@ -322,13 +323,10 @@ int handleMode(const std::string& line, Client& client, Serveur& serveur)
         }
         if (args[2][0] == '+' || args[2][0] == '-')
         {
-            if (args[2][1] == '+' || args[2][1] == '-')
+            if (findMode(&client, args, serveur, *channel) == 1)
             {
-            	if (findMode(&client, args, serveur, *channel) == 1)
-            	{
-                	return 1;
-            	}
-			}
+                return 1;
+            }
         }
         else
         {
@@ -341,7 +339,6 @@ int handleMode(const std::string& line, Client& client, Serveur& serveur)
     sendResponse(client, serveur, response);
     return (0);
 }
-
 
 /*
 
