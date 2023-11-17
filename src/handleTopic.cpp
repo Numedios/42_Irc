@@ -20,11 +20,13 @@ int handleTopic(const std::string& line, Client& client, Serveur& serveur)
     }
     std::string channelStr = args[1];
     Channel* channel = serveur.getChannel(channelStr);
-    if (channel->checkIfClientOperator(client.getNick()))
-    {
-        std::string response = client.returnPrefixe() + ERR_CHANOPRIVSNEEDED(channelStr) + "\r\n";
-        sendResponse(client, serveur, response);
-        return 1;
+    if (channel->getTopicStatus()) {
+        if (channel->checkIfClientOperator(client.getNick()))
+        {
+            std::string response = client.returnPrefixe() + ERR_CHANOPRIVSNEEDED(channelStr) + "\r\n";
+            sendResponse(client, serveur, response);
+            return 1;
+        }
     }
 
     //std::cout << "channel name = " << channel->getChannelName() << std::endl;
