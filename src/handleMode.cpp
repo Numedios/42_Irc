@@ -46,7 +46,9 @@ int    findMode(Client *client, std::vector<std::string> args, Serveur& serveur,
 
     if (it != channel.getMods().end()) {
         ModeFunction func = it->second;
-        (func)(args, *client, serveur, channel);
+        if ((func)(args, *client, serveur, channel)) 
+            return (1);
+
     } else {
         std::cout << "Undefined mode" << std::endl;
         std::string  response = client->returnPrefixe() + ERR_UNKNOWNMODE(args[2], args[1]) + "\r\n";
@@ -64,7 +66,7 @@ int    setInvitation(std::vector<std::string>& args, Client& client, Serveur& se
     (void) args;
     (void) client;
     (void)(serveur);
-    return (0);
+    return (1);
 }
 
 
@@ -316,9 +318,7 @@ int handleMode(const std::string& line, Client& client, Serveur& serveur)
         if (args[2][0] == '+' || args[2][0] == '-')
         {
             if (findMode(&client, args, serveur, *channel) == 1)
-            {
                 return 1;
-            }
         }
         else
         {
