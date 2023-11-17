@@ -59,7 +59,6 @@ int    findMode(Client *client, std::vector<std::string> args, Serveur& serveur,
 int    setInvitation(std::vector<std::string>& args, Client& client, Serveur& serveur, Channel& channel) 
 {
     channel.setInviteStatus(true);
-    std::cout << "Serveur is now on invitation mode" << std::endl;
     std::string  response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
     channel.sendMessageToAll(response, serveur);
     (void) args;
@@ -71,7 +70,6 @@ int    setInvitation(std::vector<std::string>& args, Client& client, Serveur& se
 
 int   removeInvitation(std::vector<std::string>& args, Client& client, Serveur& serveur, Channel& channel) 
 {
-    std::cout << "Invitation mode has been removed" << std::endl;
     channel.setInviteStatus(false);
     std::string  response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
     channel.sendMessageToAll(response, serveur);
@@ -84,12 +82,12 @@ int   removeInvitation(std::vector<std::string>& args, Client& client, Serveur& 
 
 
 int    setKeyPass(std::vector<std::string>& args, Client& client, Serveur& serveur, Channel& channel) {
-    if (args.size() < 4 || args[3].empty()) {
-        std::cout << "Uncorrect value of arguments" << std::endl;
-        return 1;
+    if (args.size() != 4) {
+        std::string response = client.returnPrefixe() + ERR_INVALIDMODEPARAM(client.getNick(), client.getNick() + "@localhost" , args[1], args[2], "invalid number of mode parameters") + "\r\n";
+        sendResponse(client, serveur, response);
+        return (1);
     }
     channel.setKey(args[3]);
-    std::cout << "Password has been updated" << std::endl;
     std::string response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
     channel.sendMessageToAll(response, serveur);
     (void) serveur;
@@ -103,8 +101,12 @@ int    setKeyPass(std::vector<std::string>& args, Client& client, Serveur& serve
 
 int    removeKeyPass(std::vector<std::string>& args, Client& client, Serveur& serveur, Channel& channel)
 {
+    if (args.size() != 3) {
+        std::string response = client.returnPrefixe() + ERR_INVALIDMODEPARAM(client.getNick(), client.getNick() + "@localhost" , args[1], args[2], "invalid number of mode parameters") + "\r\n";
+        sendResponse(client, serveur, response);
+        return (1);
+    }
     channel.setKey("");
-    std::cout << "Password has ben removed" << std::endl;
     std::string response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
     channel.sendMessageToAll(response, serveur);
     (void) client;
@@ -117,7 +119,7 @@ int    removeKeyPass(std::vector<std::string>& args, Client& client, Serveur& se
 int     addOperator(std::vector<std::string>& args, Client& client, Serveur& serveur, Channel& channel)
 {
     std::string response;
-    if (args.size() < 4 || args[3].empty()) {
+    if (args.size() != 4) {
         response = client.returnPrefixe() + ERR_INVALIDMODEPARAM(client.getNick(), client.getNick() + "@localhost" , args[1], args[2], "mode parameter needed") + "\r\n";
         sendResponse(client, serveur, response);
         response = client.returnPrefixe() + ERR_INVALIDMODEPARAM(client.getNick(), client.getNick() + "@localhost" , args[1], args[2], "invalid number of mode parameters") + "\r\n";
@@ -147,7 +149,6 @@ int     addOperator(std::vector<std::string>& args, Client& client, Serveur& ser
     channel.setOperator(target);
     response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
     channel.sendMessageToAll(response, serveur);
-    std::cout << target->getNick() << " is now an operator" << std::endl;
     (void) client;
     (void) serveur;
     (void) channel;
@@ -158,7 +159,7 @@ int     addOperator(std::vector<std::string>& args, Client& client, Serveur& ser
 int    removeOperator(std::vector<std::string>& args, Client& client, Serveur& serveur, Channel& channel)
 {
     std::string response;
-    if (args.size() < 4 || args[3].empty()) {
+    if (args.size() != 4) {
         response = client.returnPrefixe() + ERR_INVALIDMODEPARAM(client.getNick(), client.getNick() + "@localhost" , args[1], args[2], "mode parameter needed") + "\r\n";
         sendResponse(client, serveur, response);
         response = client.returnPrefixe() + ERR_INVALIDMODEPARAM(client.getNick(), client.getNick() + "@localhost" , args[1], args[2], "invalid number of mode parameters") + "\r\n";
@@ -206,12 +207,12 @@ int    removeOperator(std::vector<std::string>& args, Client& client, Serveur& s
 
 int   setLimitUser(std::vector<std::string>& args, Client& client, Serveur& serveur, Channel& channel) 
 {
-    if (args.size() < 3 || args[3].empty()) {
-        std::cout << "Uncorrect value limit" << std::endl;
-        return 1;
+    if (args.size() != 4) {
+        std::string response = client.returnPrefixe() + ERR_INVALIDMODEPARAM(client.getNick(), client.getNick() + "@localhost" , args[1], args[2], "invalid number of mode parameters") + "\r\n";
+        sendResponse(client, serveur, response);
+        return (1);
     }
     channel.setMaxUsers(std::atoi(args[3].c_str()));
-    std::cout << "Channel limit is now " << args[3] << std::endl;
     std::string  response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
     channel.sendMessageToAll(response, serveur);
     (void) client;
@@ -223,8 +224,12 @@ int   setLimitUser(std::vector<std::string>& args, Client& client, Serveur& serv
 
 int    removeLimitUser(std::vector<std::string>& args, Client& client, Serveur& serveur, Channel& channel) 
 {
+    if (args.size() != 3) {
+        std::string response = client.returnPrefixe() + ERR_INVALIDMODEPARAM(client.getNick(), client.getNick() + "@localhost" , args[1], args[2], "invalid number of mode parameters") + "\r\n";
+        sendResponse(client, serveur, response);
+        return (1);
+    }
     channel.setMaxUsers(MAX_CLIENTS);
-    std::cout << "Channel limit has been removed" << std::endl;
     std::string  response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
     channel.sendMessageToAll(response, serveur);
     (void) client;
@@ -236,8 +241,12 @@ int    removeLimitUser(std::vector<std::string>& args, Client& client, Serveur& 
 
 int setTopicProtection(std::vector<std::string>& args, Client& client, Serveur& serveur, Channel& channel)
 {
+    if (args.size() != 3) {
+        std::string response = client.returnPrefixe() + ERR_INVALIDMODEPARAM(client.getNick(), client.getNick() + "@localhost" , args[1], args[2], "invalid number of mode parameters") + "\r\n";
+        sendResponse(client, serveur, response);
+        return (1);
+    }
     channel.setTopicProtection(true);
-    std::cout << "Topic protection is now enabled" << std::endl;
     std::string  response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
     channel.sendMessageToAll(response, serveur);
     (void) client;
@@ -249,8 +258,12 @@ int setTopicProtection(std::vector<std::string>& args, Client& client, Serveur& 
 
 int removeTopicProtection(std::vector<std::string>& args, Client& client, Serveur& serveur, Channel& channel) 
 {
+    if (args.size() != 3) {
+        std::string response = client.returnPrefixe() + ERR_INVALIDMODEPARAM(client.getNick(), client.getNick() + "@localhost" , args[1], args[2], "invalid number of mode parameters") + "\r\n";
+        sendResponse(client, serveur, response);
+        return (1);
+    }
     channel.setTopicProtection(false);
-    std::cout << "Topic protection is now disabled" << std::endl;
     std::string  response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
     channel.sendMessageToAll(response, serveur);
     (void) client;
