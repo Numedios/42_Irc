@@ -324,10 +324,11 @@ int handleMode(const std::string& line, Client& client, Serveur& serveur)
         {
             if (args[2][1] == '+' || args[2][1] == '-')
             {
-            if (findMode(&client, args, serveur, *channel) == 1)
-            {
-                return 1;
-            }
+            	if (findMode(&client, args, serveur, *channel) == 1)
+            	{
+                	return 1;
+            	}
+			}
         }
         else
         {
