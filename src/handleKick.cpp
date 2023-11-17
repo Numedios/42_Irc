@@ -64,6 +64,7 @@ int handleKick(const std::string& line, Client& client, Serveur& serveur)
 {
 
     std::vector<std::string> args = createArg(line);
+    std::string response;
 
     if (args.size() < 4) 
     {
@@ -75,7 +76,7 @@ int handleKick(const std::string& line, Client& client, Serveur& serveur)
     Channel* channelParse = serveur.getChannel(channelName);
     if (channelParse->checkIfClientOperator(client.getNick()))
     {
-        std::string response = client.returnPrefixe() + ERR_CHANOPRIVSNEEDED(channelName) + "\r\n";
+        response = client.returnPrefixe() + ERR_CHANOPRIVSNEEDED(channelName) + "\r\n";
         sendResponse(client, serveur, response);
         return 1;
     }
@@ -91,7 +92,7 @@ int handleKick(const std::string& line, Client& client, Serveur& serveur)
 	{
 		if ((*it)[0] != '#')
         {
-            std::string response = client.returnPrefixe() + ERR_BADCHANMASK(*it) + "\r\n";
+            response = client.returnPrefixe() + ERR_BADCHANMASK(*it) + "\r\n";
             sendResponse(client, serveur, response);
         	return 1;
         }
@@ -102,7 +103,7 @@ int handleKick(const std::string& line, Client& client, Serveur& serveur)
 	{
 		if (serveur.checkChannelInServeur(*it) == 1)
         {
-            std::string response = client.returnPrefixe() + ERR_NOSUCHCHANNEL(*it) + "\r\n";
+            response = client.returnPrefixe() + ERR_NOSUCHCHANNEL(*it) + "\r\n";
             sendResponse(client, serveur, response);
         	return 1;
         }
@@ -117,13 +118,20 @@ int handleKick(const std::string& line, Client& client, Serveur& serveur)
 
     if (channel.checkIfClientInChannel(userkick) == 0)
     {
-        std::string response = client.returnPrefixe() + KICK(channelName, userkick, reason) + "\r\n";
-        sendResponse(client, serveur, response);
+        response = serveur.getClient(userkick)->returnPrefixe() + "PART " + channel.getChannelName() + " " + channel.getChannelName() + " :kicked" +  "\r\n";
+        channel.sendMessageToAll(response, serveur);
         send(serveur.getClient(userkick)->getSocket(), response.c_str(), response.length(), 0);
+        serveur.addHistoryChat(response);
+        //response = client.returnPrefixe() + KICK(channelName, userkick, reason) + "\r\n";
+        //channel.sendMessageToAll(response, serveur);
+        //sendResponse(client, serveur, response);
         channel.kickClient(userkick);
         return (0);
     }
-    std::string response = client.returnPrefixe() + ERR_NOTONCHANNEL(channelName) + "\r\n";
+    response = client.returnPrefixe() + ERR_NOTONCHANNEL(channelName) + "\r\n";
     sendResponse(client, serveur, response);
     return (1);
 }
+
+
+// PART #lol :kicked
