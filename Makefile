@@ -36,7 +36,7 @@ OBJ_DIR = obj/
 #                                   SOURCES                                    #
 #==============================================================================#
 
-SRC = main.cpp serveur.cpp utilsServeur.cpp client.cpp channel.cpp auth.cpp utils.cpp prefixe.cpp handleCommand.cpp handleMode.cpp handleJoin.cpp handleKick.cpp handleQuit.cpp handleInvite.cpp handleTopic.cpp handleNotice.cpp handlePrivmsg.cpp handleKill.cpp
+SRC = main.cpp serveur.cpp utilsServeur.cpp client.cpp channel.cpp auth.cpp utils.cpp prefixe.cpp handleCommand.cpp handleMode.cpp handleJoin.cpp handleKick.cpp handleQuit.cpp handleInvite.cpp handleTopic.cpp handleNotice.cpp handlePart.cpp handlePrivmsg.cpp handleKill.cpp
 #==============================================================================#
 #                                   HEADERS                                    #
 #==============================================================================#

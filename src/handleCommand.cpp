@@ -9,6 +9,7 @@ int handleNotice(const std::string& line, Client& client, Serveur& serveur);
 int handlePrivmsg(const std::string& line, Client& client, Serveur& serveur);
 int handleKill(const std::string& line, Client& client, Serveur& serveur);
 int handleNick(const std::string& line, Client& client, Serveur& serveur);
+int handlePart(const std::string& line, Client& client, Serveur& serveur);
 
 int handlePing(const std::string& line, Client& client, Serveur& serveur) 
 {
@@ -34,4 +35,5 @@ void fillCommandMap(std::map<std::string, FunctionPtr>& commands)
     commands["PRIVMSG"] = handlePrivmsg;
     commands["kill"] = handleKill;
     commands["NICK"] = handleNick;
+    commands["PART"] = handlePart;
 }
