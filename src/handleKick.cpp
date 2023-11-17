@@ -108,6 +108,12 @@ int handleKick(const std::string& line, Client& client, Serveur& serveur)
         }
 	}
 
+	// check autoban
+    if (client.getNick() == userkick) {
+        std::string response = client.returnPrefixe() + ERR_NICKNAMEINUSE(client.getNick()) + "\r\n";
+        sendResponse(client, serveur, response);
+        return (1);
+    }
 
     if (channel.checkIfClientInChannel(userkick) == 0)
     {
