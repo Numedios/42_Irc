@@ -32,3 +32,10 @@ KICK : KICK #lol soso :il est relou
 - check si le client kick existe dans le serveur. ERR_NOSUCHNICK(nicknameStr)            5
 - check si c'est un autoban :                     ERR_NICKNAMEINUSE(client.getNick())    6
 
+
+NOTICE : NOTICE soso :#lol message a envoyer
+
+PRIVMSG #lol :message a envoyer
+
+TOPIC #lol :nouveau topic
+

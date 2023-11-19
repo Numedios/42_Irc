@@ -31,7 +31,7 @@ void fillCommandMap(std::map<std::string, FunctionPtr>& commands)
     commands["QUIT"] = handleQuit;
     commands["INVITE"] = handleInvite;
     commands["TOPIC"] = handleTopic;
-    //commands["NOTICE"] = handleNotice;
+    commands["NOTICE"] = handleNotice;
     commands["PRIVMSG"] = handlePrivmsg;
     //commands["kill"] = handleKill; // inutile
     commands["NICK"] = handleNick;
