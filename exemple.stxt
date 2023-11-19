@@ -3,8 +3,8 @@
 
 
 JOIN : JOIN #lol key
- - (2 args min, 3 args utiliser max)
- - le deuxieme args doit commencer par un hastag
+ - (2 args min, 3 args utiliser max)  ERR_NEEDMOREPARAMS(args[0])
+ - le deuxieme args doit commencer par un hastag : ERR_NOSUCHCHANNEL(args[1])
  - verifier si le channel existe deja pour le creer ou le rejoindre
  - joinChannel : 
   -- verifier si le channel n'est pas full;
@@ -15,6 +15,10 @@ JOIN : JOIN #lol key
 
 INVITE : INVITE said #lol
 
-- (3 args minimun)
-- le deuxieme args doit commencer par un hastag et etre un channel existant
-- check si le client invite et pas deja dans le channel
+- (3 args minimun) : ERR_NEEDMOREPARAMS(args[0])
+- le troisieme args doit commencer par un hastag et etre un channel existant : ERR_NOSUCHCHANNEL(args[2])
+- check si le client qui invite et dans le channel : ERR_NOTONCHANNEL(channel)
+- check si le client qui invite et un operateur : ERR_CHANOPRIVSNEEDED(channelStr)
+- check si le client inviter existe dans le serveur. ERR_NOSUCHNICK(nicknameStr) 
+- check si le client inviter et deja dans le channel : ERR_USERONCHANNEL(targetClient->getNick(), channelStr)
+- check si le client et deja dans la liste des inviter :
