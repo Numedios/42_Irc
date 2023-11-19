@@ -3,97 +3,112 @@
 void joinChannel(Channel& channel, Client& client, Serveur& serveur, std::string key)
 {
     std::string response;
-    std::string name = channel.getChannelName();
+    std::string nameChannel = channel.getChannelName();
     
-    if (channel.getClients().size() == (size_t) channel.getMaxUsers())
+    if (channel.getClients().size() == (size_t) channel.getMaxUsers()) // check limite client in channel (Pas test)
     {
-        response = client.returnPrefixe() + ERR_CHANNELISFULL(client.getNick(), name) + "\r\n";
+        response = client.returnPrefixe() + ERR_CHANNELISFULL(client.getNick(), nameChannel) + "\r\n";
         sendResponse(client, serveur, response);
         return;
     }
-    if (!channel.getKey().empty() && channel.getKey() != key) {
+    if (!channel.getKey().empty() && channel.getKey() != key) // check si une clef existe et si elle corespond
+    {
         response = client.returnPrefixe() + ERR_BADCHANNELKEY(client.getNick(), channel.getChannelName()) + "\r\n";
         sendResponse(client, serveur, response);
         return;
     }
 
-    if (channel.getInviteStatus() == true)
+    if (channel.getInviteStatus() == true) // si actuellement en mode +i
     {
-        if ( channel.checkIfClientInvited(client.getNick()) == 1)
+        if ( channel.checkIfClientInvited(client.getNick()) == 1) // si le client ne fait pas partie des inviter
         {
-            response = client.returnPrefixe() + ERR_INVITEONLYCHAN(client.getNick(), name) + "\r\n";
+            response = client.returnPrefixe() + ERR_INVITEONLYCHAN(client.getNick(), nameChannel) + "\r\n";
             sendResponse(client, serveur, response);
             return ;
         }
-        else
+        else // si il fait partie des inviter
             channel.delInvitedClient(&client);
     }
-    if (channel.getOperators().empty())
+    if (channel.getOperators().empty()) // si il n'y a pas d'operateur dans le channel il le devient (inutile)
         channel.setOperator(&client);
     else
         channel.addClient(&client);
     
-    response = client.returnPrefixe() + RPL_NAMREPLY(name, client.getNick(), channel.sendAllClientsNames()) + "\r\n";
+    response = client.returnPrefixe() + RPL_NAMREPLY(nameChannel, client.getNick(), channel.sendAllClientsNames()) + "\r\n";
     sendResponse(client, serveur, response);
 
-    response = client.returnPrefixe() + RPL_ENDOFNAMES(name, client.getNick()) + "\r\n";
+    response = client.returnPrefixe() + RPL_ENDOFNAMES(nameChannel, client.getNick()) + "\r\n";
     sendResponse(client, serveur, response);
 
-    response = client.returnPrefixe() + "JOIN " + name + "\r\n";
+    response = client.returnPrefixe() + "JOIN " + nameChannel + "\r\n";
     sendResponse(client, serveur, response);
 }
 
 
-void createChannel(const std::string& name, Client& client, Serveur& serveur)
+void createChannel(const std::string& nameChannel, Client& client, Serveur& serveur)
 {
-    Channel channel = Channel(name);
+    Channel channel = Channel(nameChannel);
 
     Client *clientPtr = &client;
     channel.setOperator(clientPtr);
-    serveur.addChannel(name, channel);
+    serveur.addChannel(nameChannel, channel);
 
     std::string response;
 
-    response = client.returnPrefixe() + RPL_NAMREPLY(name, client.getNick(), channel.sendClientName(client)) + "\r\n";
+    response = client.returnPrefixe() + RPL_NAMREPLY(nameChannel, client.getNick(), channel.sendClientName(client)) + "\r\n";
     sendResponse(client, serveur, response);
 
-    response = client.returnPrefixe() + RPL_ENDOFNAMES(name, client.getNick()) + "\r\n";
+    response = client.returnPrefixe() + RPL_ENDOFNAMES(nameChannel, client.getNick()) + "\r\n";
     sendResponse(client, serveur, response);
 
-    response = client.returnPrefixe() + "JOIN " + name + "\r\n";
+    response = client.returnPrefixe() + "JOIN " + nameChannel + "\r\n";
     sendResponse(client, serveur, response);
 }
+
+
+/*
+
+args[0] = JOIN
+args[1] = #nameChannel
+args[2] = key (optionnel)
+
+*/
 
 int handleJoin(const std::string& line, Client& client, Serveur& serveur)
 {
     std::vector<std::string> args = createArg(line);
-    if (args.size() < 2) 
+    std::cout << "args.size = " << args.size() << std::endl;
+    std::string response;
+
+    if (args.size() < 2) // nombre arguments
     {
-        std::string response = client.returnPrefixe() + ERR_NEEDMOREPARAMS(args[0]) + "\r\n";
+        response = client.returnPrefixe() + ERR_NEEDMOREPARAMS(args[0]) + "\r\n";
         sendResponse(client, serveur, response);
         return 1;
     } 
-    std::string name = args[1];
 
-    if (name.empty())
+    std::string nameChannel = args[1];
+
+    if (nameChannel.empty() || nameChannel[0] != '#') // debut avec # ou vide
     {
-        serveur.addHistoryChat(create_message(client, ":->test", "Error : pas de nom a join\n"));
-        return (0);
-    }
-
-    std::map<std::string, Channel>& channels = serveur.getChannels();
-    if (channels.find(name) != channels.end())
-    {
-
-        std::cout << client.getNick() << " join channel :" << name << std::endl;
-        if (args.size() > 2) 
-            joinChannel(*serveur.getChannel(name), client, serveur, args[2]);
-        else 
-            joinChannel(*serveur.getChannel(name), client, serveur, "");
+        response = client.returnPrefixe() + ERR_BADCHANMASK(nameChannel) + "\r\n";
+        sendResponse(client, serveur, response);
         return (1);
     }
-    std::cout << client.getNick() << " create new channel :" << name << std::endl;
-    createChannel(name, client, serveur);
+
+    Channel*  channel = serveur.getChannel(nameChannel);
+    if (channel != NULL) // si le serveur n'existe pas
+    {
+
+        std::cout << client.getNick() << " join channel :" << nameChannel << std::endl;
+        if (args.size() > 2)  // presence de la key ou non 
+            joinChannel(*serveur.getChannel(nameChannel), client, serveur, args[2]);
+        else 
+            joinChannel(*serveur.getChannel(nameChannel), client, serveur, "");
+        return (1);
+    }
+    std::cout << client.getNick() << " create new channel :" << nameChannel << std::endl;
+    createChannel(nameChannel, client, serveur);
     return (0);
 }
 

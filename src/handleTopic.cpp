@@ -13,14 +13,15 @@ int handleTopic(const std::string& line, Client& client, Serveur& serveur)
         sendResponse(client, serveur, response);
         return 1;
     }
-    if (args[1][0] != '#')
+    std::string channelStr = args[1];
+    Channel* channel = serveur.getChannel(channelStr);
+
+    if (args[1][0] != '#' || channel == NULL)
     {
         std::string response = client.returnPrefixe() + ERR_NOSUCHCHANNEL(args[1]) + "\r\n";
         sendResponse(client, serveur, response);
         return 1;
     }
-    std::string channelStr = args[1];
-    Channel* channel = serveur.getChannel(channelStr);
     if (channel->getTopicStatus()) {
         if (channel->checkIfClientOperator(client.getNick()))
         {

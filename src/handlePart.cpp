@@ -5,12 +5,12 @@ int handlePart(const std::string& line, Client& client, Serveur& serveur)
     std::vector<std::string> args = createArg(line);
 	std::string response;
 
-    // if (args.size() < 3) 
-    // {
-    //     response = client.returnPrefixe() + ERR_NEEDMOREPARAMS(args[0]) + "\r\n";
-    //     sendResponse(client, serveur, response);
-    //     return 1;
-    // } 
+    if (args.size() < 2) 
+    {
+        response = client.returnPrefixe() + ERR_NEEDMOREPARAMS(args[0]) + "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
+    } 
 	if (args[1][0] != '#')
     {
         std::string response = client.returnPrefixe() + ERR_NOSUCHCHANNEL(args[1]) + "\r\n";

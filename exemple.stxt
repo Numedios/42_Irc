@@ -1,0 +1,20 @@
+
+
+
+
+JOIN : JOIN #lol key
+ - (2 args min, 3 args utiliser max)
+ - le deuxieme args doit commencer par un hastag
+ - verifier si le channel existe deja pour le creer ou le rejoindre
+ - joinChannel : 
+  -- verifier si le channel n'est pas full;
+  -- verifier si il y a la presence d'un clef sur ce channel  
+
+
+
+
+INVITE : INVITE said #lol
+
+- (3 args minimun)
+- le deuxieme args doit commencer par un hastag et etre un channel existant
+- check si le client invite et pas deja dans le channel
