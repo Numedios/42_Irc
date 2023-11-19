@@ -5,7 +5,7 @@ void joinChannel(Channel& channel, Client& client, Serveur& serveur, std::string
     std::string response;
     std::string nameChannel = channel.getChannelName();
     
-    if (channel.getClients().size() == (size_t) channel.getMaxUsers()) // check limite client in channel (Pas test)
+    if (channel.getNumberClient() == channel.getMaxUsers()) // check limite client in channel (Pas test)
     {
         response = client.returnPrefixe() + ERR_CHANNELISFULL(client.getNick(), nameChannel) + "\r\n";
         sendResponse(client, serveur, response);
@@ -41,7 +41,7 @@ void joinChannel(Channel& channel, Client& client, Serveur& serveur, std::string
     sendResponse(client, serveur, response);
 
     response = client.returnPrefixe() + "JOIN " + nameChannel + "\r\n";
-    sendResponse(client, serveur, response);
+    channel.sendMessageToAll(response, serveur);
 }
 
 
@@ -115,16 +115,26 @@ int handleJoin(const std::string& line, Client& client, Serveur& serveur)
 
 /*
 
-rajouter la gestion de key dans join
+--> send = :cricri!sbelabba@127.0.0.1 JOIN #lol
+--> send2 = :cricri!sbelabba@127.0.0.1 329 cricri!sbelabba@127.0.0.1 #lol 1700404873
 
-*/
+--> sendReply = :cricri!sbelabba@127.0.0.1 332 cricri #lol :chocapic
+
+--> send2 = :cricri!sbelabba@127.0.0.1 333 cricri!sbelabba@127.0.0.1 #lol said!sbelabba@127.0.0.1 1700404873
+
+--> send = :cricri!sbelabba@127.0.0.1 JOIN #lol
+--> sendReply = :said!sbelabba@127.0.0.1 353 said = #lol :@said cricri 
+
+--> sendReply = :said!sbelabba@127.0.0.1 366 said #lol :End of /NAMES list
+
+--> sendReply = :cricri!sbelabba@127.0.0.1 353 cricri = #lol :@said cricri 
+
+--> sendReply = :cricri!sbelabba@127.0.0.1 366 cricri #lol :End of /NAMES list
 
 
-/*
-
-:said!sbelabba@127.0.0.1 473 #lol :Cannot join channel (+i)
-:said!sbelabba@127.0.0.1 473 said #lol :Cannot join channel (+i)
-
+15:43:57:-->   {4}[:cricri!sbelabba@127.0.0.1 353 cricri = #lol :@soso cricri 
+15:43:57:-->   {4}[:cricri!sbelabba@127.0.0.1 366 cricri #lol :End of /NAMES list
+15:43:57:-->   {4}[:cricri!sbelabba@127.0.0.1 JOIN #lol
 
 
 

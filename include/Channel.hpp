@@ -21,7 +21,7 @@ void fillModesMap(std::map<std::string, ModeFunction>& modes);
 
 class Channel {
 public:
-    Channel() : _name("") {}
+    Channel() : _name(""), _topic(""), _key("") , _topicProtection(false), _inviteOnly(false) {}
     Channel(const std::string& name) : _name(name), _topic(""), _key("") , _topicProtection(false), _inviteOnly(false) {
         fillModesMap(_modes);
     }
@@ -197,6 +197,10 @@ public:
 
     std::map<int, Client *>	getOperators(){
         return _operators;
+    }
+
+    int  getNumberClient(){
+        return (_operators.size() + _clients.size());
     }
 
     std::map<std::string, ModeFunction>& getMods() {
