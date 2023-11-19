@@ -1,5 +1,15 @@
 #include "../include/Serveur.hpp"
 
+
+Channel::Channel() : _name(""), _topic(""), _key("") , _topicProtection(false), _inviteOnly(false), _maxUsers(MAX_CLIENTS){
+    fillModesMap(_modes);
+}
+
+Channel::Channel(const std::string& name) : _name(name), _topic(""), _key("") , _topicProtection(false), _inviteOnly(false), _maxUsers(MAX_CLIENTS) {
+    fillModesMap(_modes);
+}
+
+
 std::string Channel::sendClientName(const Client& users)
 {
     std::map<int, Client *> ::iterator it = _operators.begin();

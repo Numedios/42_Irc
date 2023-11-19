@@ -10,14 +10,13 @@ void joinChannel(Channel& channel, Client& client, Serveur& serveur, std::string
         response = client.returnPrefixe() + ERR_CHANNELISFULL(client.getNick(), nameChannel) + "\r\n";
         sendResponse(client, serveur, response);
         return;
-    }
+    } 
     if (!channel.getKey().empty() && channel.getKey() != key) // check si une clef existe et si elle corespond
     {
         response = client.returnPrefixe() + ERR_BADCHANNELKEY(client.getNick(), channel.getChannelName()) + "\r\n";
         sendResponse(client, serveur, response);
         return;
     }
-
     if (channel.getInviteStatus() == true) // si actuellement en mode +i
     {
         if ( channel.checkIfClientInvited(client.getNick()) == 1) // si le client ne fait pas partie des inviter
