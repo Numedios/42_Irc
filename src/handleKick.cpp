@@ -59,6 +59,15 @@ std::vector<std::string> multipleParams(std::string params)
 	return result;
 }
 
+/*
+
+args[0] = KICK
+args[1] = nom du userkick
+args[2] = channel
+args[3 et +] = reason du kick 
+
+*/
+
 
 int handleKick(const std::string& line, Client& client, Serveur& serveur)
 {
@@ -66,69 +75,73 @@ int handleKick(const std::string& line, Client& client, Serveur& serveur)
     std::vector<std::string> args = createArg(line);
     std::string response;
 
-    if (args.size() < 4) 
+    if (args.size() < 4)  // 1
     {
         std::string response = client.returnPrefixe() + ERR_NEEDMOREPARAMS(args[0]) + "\r\n";
         sendResponse(client, serveur, response);
         return 1;
     } 
     std::string channelName = args[1];
+    std::string userkick = args[2];
+
     Channel* channelParse = serveur.getChannel(channelName);
-    if (channelParse->checkIfClientOperator(client.getNick()))
+
+    if (args[1][0] != '#' || channelParse == NULL) // 2
+    {
+        std::string response = client.returnPrefixe() + ERR_NOSUCHCHANNEL(args[1]) + "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
+    }
+
+    if (channelParse->checkIfClientInChannel(client.getNick()) == 1) // 3
+    {
+        std::string response = client.returnPrefixe() + ERR_NOTONCHANNEL(channelName)+ "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
+    }
+
+    if (channelParse->checkIfClientOperator(client.getNick())) // 4
     {
         response = client.returnPrefixe() + ERR_CHANOPRIVSNEEDED(channelName) + "\r\n";
         sendResponse(client, serveur, response);
         return 1;
     }
 
-    std::string userkick = args[2];
+
+    Client * targetClient = serveur.getClient(userkick);
     std::string reason   = createReason(line, 2);
     Channel& channel = *serveur.getChannel(channelName);
     std::vector<std::string> channels_name = multipleParams(channelName);
 
-    // check il y a un mask = #
-    for (std::vector<std::string>::iterator it = channels_name.begin(); it != channels_name.end(); ++it)
-	{
-		if ((*it)[0] != '#')
-        {
-            response = serveur.getClient(userkick)->returnPrefixe() + ERR_BADCHANMASK(*it) + "\r\n";
-            sendResponse(client, serveur, response);
-        	return 1;
-        }
+    if (targetClient == NULL) // 5 check si la cible existe dans le serveur
+    {
+        response = client.returnPrefixe() + ERR_USERNOTINCHANNEL(channel.getChannelName(), userkick) + "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
     }
 
-    // check si le channel existe
-    for (std::vector<std::string>::iterator it = channels_name.begin(); it != channels_name.end(); ++it)
-	{
-		if (serveur.checkChannelInServeur(*it) == 1)
-        {
-            response = client.returnPrefixe() + ERR_NOSUCHCHANNEL(*it) + "\r\n";
-            sendResponse(client, serveur, response);
-        	return 1;
-        }
-	}
+
+
 
 	// check autoban
-    if (client.getNick() == userkick) {
+    if (client.getNick() == userkick) // 6 check si c'est un autoban 
+    { 
         std::string response = client.returnPrefixe() + ERR_NICKNAMEINUSE(client.getNick()) + "\r\n";
         sendResponse(client, serveur, response);
         return (1);
     }
 
-    if (channel.checkIfClientInChannel(userkick) == 0)
+    if (channel.checkIfClientInChannel(userkick) == 0) // 7
     {
         response = serveur.getClient(userkick)->returnPrefixe() + "PART " + channel.getChannelName() + " " + channel.getChannelName() + " :kicked" +  "\r\n";
         channel.sendMessageToAll(response, serveur);
         send(serveur.getClient(userkick)->getSocket(), response.c_str(), response.length(), 0);
         serveur.addHistoryChat(response);
-        //response = client.returnPrefixe() + KICK(channelName, userkick, reason) + "\r\n";
-        //channel.sendMessageToAll(response, serveur);
-        //sendResponse(client, serveur, response);
         channel.kickClient(userkick);
         return (0);
     }
-    response = client.returnPrefixe() + ERR_USERNOTINCHANNEL(channel.getChannelName(), userkick) + "\r\n";
-    sendResponse(client, serveur, response);
+    // response = client.returnPrefixe() + ERR_USERNOTINCHANNEL(channel.getChannelName(), userkick) + "\r\n"; 
+    // sendResponse(client, serveur, response);
     return (1);
 }
 

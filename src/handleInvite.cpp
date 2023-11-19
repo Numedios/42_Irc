@@ -49,7 +49,7 @@ int handleInvite(const std::string& line, Client& client, Serveur& serveur)
     Client * targetClient = serveur.getClient(nicknameStr);
     if (targetClient == NULL) // check si la cible existe dans le serveur
     {
-        std::string response = client.returnPrefixe() + ERR_NOSUCHNICK(nicknameStr) + "\r\n";
+        std::string response = client.returnPrefixe() + ERR_USERNOTINCHANNEL(channel->getChannelName(), nicknameStr) + "\r\n";
         sendResponse(client, serveur, response);
         return 1;
     }

@@ -22,3 +22,13 @@ INVITE : INVITE said #lol
 - check si le client inviter existe dans le serveur. ERR_NOSUCHNICK(nicknameStr) 
 - check si le client inviter et deja dans le channel : ERR_USERONCHANNEL(targetClient->getNick(), channelStr)
 - check si le client et deja dans la liste des inviter :
+
+KICK : KICK #lol soso :il est relou
+
+- (3 args minimun) ERR_NEEDMOREPARAMS(args[0])                                           1 
+- le deuxieme args doit commencer par un hastag et etre un channel existant : ERR_NOSUCHCHANNEL(args[1])  2 
+- check si le client qui invite et dans le channel : ERR_NOTONCHANNEL(channel)           3 
+- check si le client qui invite et un operateur : ERR_CHANOPRIVSNEEDED(channelName)      4
+- check si le client kick existe dans le serveur. ERR_NOSUCHNICK(nicknameStr)            5
+- check si c'est un autoban :                     ERR_NICKNAMEINUSE(client.getNick())    6
+
