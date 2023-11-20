@@ -23,6 +23,14 @@ int handleTopic(const std::string& line, Client& client, Serveur& serveur)
         sendResponse(client, serveur, response);
         return 1;
     }
+
+    if (args.size() == 2)
+    {
+        std::string response = TOPIC(channel->getChannelName(), channel->getTopic()) + " :" + "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
+    }
+
     if (channel->getTopicStatus() == true) {
         if (channel->checkIfClientOperator(client.getNick()))
         {
