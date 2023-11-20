@@ -26,7 +26,17 @@ int handlePrivmsg(const std::string& line, Client& client, Serveur& serveur)
 	std::string reason   = createReason(line, 1);
 
 	std::string nameChannel = args[1];
+	
+
+
+	if (serveur.getClient(nameChannel) != NULL)
+	{
+		response = client.returnPrefixe() + "PRIVMSG " + nameChannel  + " :" + reason + "\r\n";
+		sendResponse(*serveur.getClient(nameChannel), serveur, response);
+		return (1);
+	}
 	Channel* channel = serveur.getChannel(nameChannel);
+
 
 	if (args[1][0] != '#' || channel == NULL) // 2
     {
