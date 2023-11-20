@@ -87,7 +87,7 @@ int handleJoin(const std::string& line, Client& client, Serveur& serveur)
 
     std::string nameChannel = args[1];
 
-    if (nameChannel.empty() || nameChannel[0] != '#') // debut avec # ou vide
+    if (nameChannel.empty() || nameChannel.size() == 1 ||  nameChannel[0] != '#') // debut avec # ou vide
     {
         response = client.returnPrefixe() + ERR_BADCHANMASK(nameChannel) + "\r\n";
         sendResponse(client, serveur, response);
