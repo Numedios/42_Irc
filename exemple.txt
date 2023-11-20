@@ -49,5 +49,15 @@ PRIVMSG #lol :message a envoyer
 
 TOPIC #lol :nouveau topic
 
+TOPIC #lol 
+
+- (2 args minimun) ERR_NEEDMOREPARAMS(args[0]) 1
+- le deuxieme args doit commencer par un hastag et etre un channel existant : ERR_NOSUCHCHANNEL(args[1])  2 
+- si le channel et en topic +t ERR_CHANOPRIVSNEEDED(channelStr)
+- si le client n'est pas dans le channel  ERR_NOTONCHANNEL(args[1])
+- 
+
+
+
 
 

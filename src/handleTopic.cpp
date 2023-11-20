@@ -13,6 +13,7 @@ int handleTopic(const std::string& line, Client& client, Serveur& serveur)
         sendResponse(client, serveur, response);
         return 1;
     }
+
     std::string channelStr = args[1];
     Channel* channel = serveur.getChannel(channelStr);
 
@@ -22,7 +23,7 @@ int handleTopic(const std::string& line, Client& client, Serveur& serveur)
         sendResponse(client, serveur, response);
         return 1;
     }
-    if (channel->getTopicStatus()) {
+    if (channel->getTopicStatus() == true) {
         if (channel->checkIfClientOperator(client.getNick()))
         {
             std::string response = client.returnPrefixe() + ERR_CHANOPRIVSNEEDED(channelStr) + "\r\n";
@@ -43,39 +44,18 @@ int handleTopic(const std::string& line, Client& client, Serveur& serveur)
     args.erase(args.begin(), args.begin() + 2);
 
     std::string newTopic = concatenateWords(args);
-    std::map<int, Client *> clients = channel->getClients();
-    std::map<int, Client *> operators = channel->getOperators();
-	std::map<int, Client *>::iterator it;
+    std::cout << "newtopic = " << newTopic << std::endl;
 	if (newTopic.size() == 0)
 	{
 		channel->setTopic("");
-        response = it->second->returnPrefixe() + TOPIC(channel->getChannelName(), channel->getTopic()) + " :" + "\r\n";
-        for (it = clients.begin(); it != clients.end(); it++)
-		{
-			response = it->second->returnPrefixe() + TOPIC(channel->getChannelName(), channel->getTopic()) + " :" + "\r\n";
-            sendResponse(*it->second, serveur, response);
-		}
-        for (it = operators.begin(); it != operators.end(); it++)
-		{
-			response = it->second->returnPrefixe() + TOPIC(channel->getChannelName(), channel->getTopic()) + " :" + "\r\n";
-            sendResponse(*it->second, serveur, response);
-		}
+        response = client.returnPrefixe() + TOPIC(channel->getChannelName(), channel->getTopic()) + " :" + "\r\n";
+        channel->sendMessageToAll(response, serveur);
 	}
     else
     {
-        //std::string topic = args[args.size() - 1];
-        //topic.erase(topic.begin());
         channel->setTopic(newTopic);
-        for (it = clients.begin(); it != clients.end(); it++)
-        {
-            response = it->second->returnPrefixe() + RPL_TOPIC(channel->getChannelName(), channel->getTopic(), it->second->getNick()) + "\r\n";
-            sendResponse(*it->second, serveur, response);
-        }
-        for (it = operators.begin(); it != operators.end(); it++)
-        {
-            response = it->second->returnPrefixe() + RPL_TOPIC(channel->getChannelName(), channel->getTopic(), it->second->getNick()) + "\r\n";
-            sendResponse(*it->second, serveur, response);
-        }
+        response = client.returnPrefixe() + RPL_TOPIC(channel->getChannelName(), channel->getTopic(), client.getNick()) + "\r\n";
+        channel->sendMessageToAll(response, serveur);
     }
     return (0);
 }
