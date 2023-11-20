@@ -197,6 +197,7 @@ int Serveur::processAuthenticationManagement(int index)
             messageQueue.pop();
             break;
         }
+
         std::map<std::string, FunctionPtr>::iterator it = getAuth().find(getNthWord(frontMessage, 0));
         if (it != getAuth().end())
         {
@@ -211,7 +212,8 @@ int Serveur::processAuthenticationManagement(int index)
             addHistoryChat(create_message(*client, ":TESTIN", "Error : echec commande introuvable ou authentification non faite\n"));
             std::cout << "Errror commande introuvable authentification non faite" << std::endl;
         }
-        messageQueue.pop();
+        if (!messageQueue.empty())
+            messageQueue.pop();
     }
     return (0);
 }
@@ -231,6 +233,7 @@ int Serveur::processCommandManagement(int index)
             messageQueue.pop();
             break;
         }
+
         std::map<std::string, FunctionPtr>::iterator it = getCommands().find(getNthWord(frontMessage, 0));
         if (it != getCommands().end())
         {
@@ -242,7 +245,7 @@ int Serveur::processCommandManagement(int index)
         }
         else
         {
-            addHistoryChat(create_message(*client, ":TESTIN", "Error : echec commande introuvable authentification non faite\n"));
+            addHistoryChat(create_message(*client, ":TESTIN", "Error : echec commande introuvable\n"));
             //std::cout << "Errror commande introuvable" << std::endl;
         }
         if (!messageQueue.empty())

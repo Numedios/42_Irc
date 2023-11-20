@@ -26,7 +26,7 @@ int handleTopic(const std::string& line, Client& client, Serveur& serveur)
 
     if (args.size() == 2)
     {
-        std::string response = TOPIC(channel->getChannelName(), channel->getTopic()) + " :" + "\r\n";
+        std::string response = TOPIC(channel->getChannelName(), channel->getTopic()) + "\r\n";
         sendResponse(client, serveur, response);
         return 1;
     }
