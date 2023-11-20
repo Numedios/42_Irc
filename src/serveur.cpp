@@ -224,7 +224,13 @@ int Serveur::processCommandManagement(int index)
     while (!(messageQueue.empty()))
     {
         const std::string& frontMessage = messageQueue.front(); 
-                            
+        
+        if ((frontMessage.find('\n') == std::string::npos) && (frontMessage.find('\r') == std::string::npos))
+        {
+            client->setPendingCommand(frontMessage);
+            messageQueue.pop();
+            break;
+        }
         std::map<std::string, FunctionPtr>::iterator it = getCommands().find(getNthWord(frontMessage, 0));
         if (it != getCommands().end())
         {
