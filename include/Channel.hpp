@@ -155,6 +155,12 @@ public:
         _clients.erase(client->getSocket());
     }
 
+    void	delUser(Client* client) {
+        _operators.erase(client->getSocket());
+        _clients.erase(client->getSocket());
+        _invitedList.erase(client->getSocket());
+    }
+
     void setTopic(std::string name)
     {
         _topic = name;

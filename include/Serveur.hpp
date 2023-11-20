@@ -96,18 +96,44 @@ public:
         }
         while (channelsWhereClientIs.size() > 0)
         {
-            std::map<int, Client *> clients = getClients();
-
-            for (std::map<int, Client *>::iterator it_channel = clients.begin(); it_channel != clients.end(); ++it_channel)
-            {
-                std::string response = client->returnPrefixe() + "PART " + channelsWhereClientIs[0]->getChannelName() + " " + reason + "\r\n";
-                sendResponse(*it_channel->second, *this, response);
-            }
-            this->kickClientFromChannel(client, channelsWhereClientIs[0]);
+            std::string response = client->returnPrefixe() + "PART " + channelsWhereClientIs[0]->getChannelName() + " " + reason + "\r\n";
+            channelsWhereClientIs[0]->sendMessageToAll(response, *this);
+            channelsWhereClientIs[0]->delUser(client);
             channelsWhereClientIs.erase(channelsWhereClientIs.begin());
         }
     }
     
+
+/*
+
+    void	kickClientFromAllChannelsWithJoin(Client* client, std::string reason)
+    {
+        std::vector<Channel *>	channelsWhereClientIs;
+
+        for (std::map<std::string, Channel>::iterator it = this->_channels.begin(); it != this->_channels.end(); it++)
+        {
+            if ((*it).second.checkIfClientInChannel(client->getNick()) == 0)
+            {
+                channelsWhereClientIs.push_back(&(*it).second);
+            }
+        }
+        while (channelsWhereClientIs.size() > 0)
+        {
+
+            
+            std::string response = client->returnPrefixe() + "PART " + channelsWhereClientIs[0]->getChannelName() + " " + reason + "\r\n";
+            channelsWhereClientIs[0]->sendMessageToAll(response, *this);
+            
+            channelsWhereClientIs[0]->delUser(client);
+        }
+        
+        channelsWhereClientIs.erase(channelsWhereClientIs.begin());
+        }
+    }
+
+
+*/
+
 
     void allClientIndexDown(int index)
     {

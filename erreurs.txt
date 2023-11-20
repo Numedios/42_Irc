@@ -1,3 +1,4 @@
 
 rajourer la gestion du ctrl D dans la partie autre que l'authentification
 
+join channel faire en sorte de erase le channel quand il n'y a plus de client dedant
