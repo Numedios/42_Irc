@@ -99,6 +99,8 @@ public:
             std::string response = client->returnPrefixe() + "PART " + channelsWhereClientIs[0]->getChannelName() + " " + reason + "\r\n";
             channelsWhereClientIs[0]->sendMessageToAllExceptOne(response, *this, *client);
             channelsWhereClientIs[0]->delUser(client);
+            if (channelsWhereClientIs[0]->getNumberClient() == 0)
+                deleteChannel(channelsWhereClientIs[0]->getChannelName());
             channelsWhereClientIs.erase(channelsWhereClientIs.begin());
         }
     }
@@ -229,6 +231,10 @@ public:
     
     void addChannel(std::string name,Channel& channel) {
         _channels[name] = channel;
+    }
+
+    void delChannel(const std::string& name) {
+        _channels.erase(name);
     }
 
 private:
