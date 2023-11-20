@@ -130,6 +130,22 @@ int     Channel::isOperator(Client *client)
     return (0);
 }
 
+void Channel::sendMessageToAllExceptOne(std::string response,  Serveur& serveur,Client& user)
+{
+    std::map<int, Client *>::iterator it = _operators.begin();
+
+    for (; it != _operators.end(); it++)
+    {
+        if (it->second->getNick() != user.getNick())
+            sendResponse(*(it)->second, serveur, response);
+    }
+    it = _clients.begin();
+    for (; it != _clients.end(); it++)
+    {
+        if (it->second->getNick() != user.getNick())
+            sendResponse(*(it)->second, serveur, response);
+    }
+}
 
 void Channel::sendMessageToAll(std::string response,  Serveur& serveur)
 {

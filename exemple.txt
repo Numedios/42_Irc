@@ -34,8 +34,20 @@ KICK : KICK #lol soso :il est relou
 
 
 NOTICE : NOTICE soso :#lol message a envoyer
+- (2 args minimun) ERR_NEEDMOREPARAMS(args[0])
+- le deuxieme args doit commencer etre un channel existant ou un user: ERR_NOSUCHCHANNEL(args[1])  2
+- le deuxieme args doit commencer par un hastag et etre un channel existant : ERR_NOSUCHCHANNEL(args[1])  2 
+- potentiellement verifier si il fait partie du channel 
+
 
 PRIVMSG #lol :message a envoyer
 
+- (2 args minimun) ERR_NEEDMOREPARAMS(args[0]) 1
+- le deuxieme args doit commencer par un hastag et etre un channel existant : ERR_NOSUCHCHANNEL(args[1])  2 
+- check si le client qui envoie et dans le channel : ERR_NOTONCHANNEL(channel)   3 
+
+
 TOPIC #lol :nouveau topic
+
+
 

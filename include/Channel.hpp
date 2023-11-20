@@ -30,6 +30,7 @@ public:
     void kickClient(std::string client);
     int  isOperator(Client *client);
     void sendMessageToAll(std::string response,  Serveur& serveur);
+    void sendMessageToAllExceptOne(std::string response,  Serveur& serveur,Client& user);
     //void fillModesMap();
     //int  findMode(Client *client, const std::string &arg, const std::string &line, Serveur& serveur);
     // void setInvitation(Client *client, std::string const& line);

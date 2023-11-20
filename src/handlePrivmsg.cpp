@@ -1,9 +1,18 @@
 #include "../include/Serveur.hpp"
 
 
+/*
+
+args[0] = PRIVMSG 
+args[1] = #channel 
+args[2 et +] = message a envoyer
+
+*/
+
 int handlePrivmsg(const std::string& line, Client& client, Serveur& serveur)
 {
 	std::vector<std::string> args = createArg(line);
+	std::string response;
 
     if (args.size() < 2) 
     {
@@ -12,13 +21,27 @@ int handlePrivmsg(const std::string& line, Client& client, Serveur& serveur)
         return 1;
     } 
 
-    std::string response;
+
     std::string message = args[args.size() - 1];
-    std::string	target = args[1];
 	std::string reason   = createReason(line, 1);
 
+	std::string nameChannel = args[1];
+	Channel* channel = serveur.getChannel(nameChannel);
 
-	std::cout << "PRIVMSG" << std::endl;
+	if (args[1][0] != '#' || channel == NULL) // 2
+    {
+        std::string response = client.returnPrefixe() + ERR_NOSUCHCHANNEL(args[1]) + "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
+    }
+
+	if (channel->checkIfClientInChannel(client.getNick()) == 1) // 3
+    {
+        std::string response = client.returnPrefixe() + ERR_NOTONCHANNEL(nameChannel)+ "\r\n";
+        sendResponse(client, serveur, response);
+        return 1;
+    }
+
 	if (message.empty())
 	{
 		std::string response = client.returnPrefixe() + ERR_NOTEXTTOSEND() + "\r\n";
@@ -26,55 +49,20 @@ int handlePrivmsg(const std::string& line, Client& client, Serveur& serveur)
     	sendResponse(client, serveur, response);
 		return 1;
 	}
-	if (target.empty())
+
+	if (nameChannel.empty())
 	{
 		std::string response = client.returnPrefixe() + ERR_NORECIPIENT(args[0]) + "\r\n";
     
     	sendResponse(client, serveur, response);
 		return 1;
 	}
-	if (serveur.getClient(target) == NULL && serveur.getChannel(target) == NULL)
+
+    if (nameChannel[0] == '#')
 	{
-		std::string response = client.returnPrefixe() + ERR_NOSUCHNICK(target) + "\r\n";
-    
-    	sendResponse(client, serveur, response);
-		return 1;
-	}
-    if (target[0] == '#')
-	{
-		Channel *channel = serveur.getChannel(target);
-		
-		std::map<int, Client *> clients = channel->getClients();
-		std::map<int, Client *> operators = channel->getOperators();
-		std::map<int, Client *>::iterator it;
-		for (it = clients.begin(); it != clients.end(); it++)
-		{
-			if ((*it).second->getNick() != client.getNick())
-            {
-				response = client.returnPrefixe() + "PRIVMSG " + target  + " " + reason + "\r\n";
-                sendResponse(*it->second, serveur, response);
-            }
-		}
-		for (it = operators.begin(); it != operators.end(); it++)
-		{
-			if ((*it).second->getNick() != client.getNick())
-            {
-				response = client.returnPrefixe() + "PRIVMSG " + target  + " " + reason + "\r\n";
-                sendResponse(*it->second, serveur, response);
-            }
-		}
-	}
-    else
-	{
-		Client *targetClient = serveur.getClient(target);
-		if (targetClient == NULL)
-		{
-			std::string response = client.returnPrefixe() + ERR_NOSUCHNICK(target) + "\r\n";
-    		sendResponse(client, serveur, response);
-			return 1;
-		}
-	    response = client.returnPrefixe()  + "PRIVMSG " + target + " " + reason + "\r\n";
-        sendResponse(*serveur.getClient(target), serveur, response);
+
+		response = client.returnPrefixe() + "PRIVMSG " + nameChannel  + " " + reason + "\r\n";
+		channel->sendMessageToAllExceptOne(response, serveur, client);
 	}
     return (0);
 }

@@ -76,7 +76,6 @@ args[2] = key (optionnel)
 int handleJoin(const std::string& line, Client& client, Serveur& serveur)
 {
     std::vector<std::string> args = createArg(line);
-    std::cout << "args.size = " << args.size() << std::endl;
     std::string response;
 
     if (args.size() < 2) // nombre arguments
