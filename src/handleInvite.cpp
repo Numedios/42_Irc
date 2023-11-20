@@ -70,7 +70,7 @@ int handleInvite(const std::string& line, Client& client, Serveur& serveur)
     // }
     if (channel->checkIfClientInvited(targetClient) == 1)
         channel->addInvitedClient(targetClient);
-    std::string response = targetClient->returnPrefixe() + "INVITE " + nicknameStr + " " + channelStr + "\r\n";
+    std::string response = client.returnPrefixe() + "INVITE " + nicknameStr + " " + channelStr + "\r\n";
     sendResponse(*targetClient, serveur, response);
     response = client.returnPrefixe() + RPL_INVITING(channelStr, nicknameStr) + "\r\n";
     sendResponse(client, serveur, response);
