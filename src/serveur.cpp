@@ -95,7 +95,7 @@ void Serveur::run()
                     }
                     if (bytesReceived <= 0)
                         handleClientDisconnect(i, " leaving");
-                    //displayHistory();
+                    displayHistory();
                 }
             }
        }
@@ -165,9 +165,7 @@ void Serveur::handleClientDisconnect(int index, std::string reason)
 
     std::string response = client->returnPrefixe() + "QUIT :" + reason + "\r\n";
     sendResponse(*client, *this, response);
-     std::cout << "la1*******************" << std::endl;
     kickClientFromAllChannelsWithJoin(client, reason);
-    std::cout << "la2*******************fin" << std::endl;
     client->setDisconnected();
     client->setAuthState(Client::NotAuthenticated);
     std::cout << "Client " << client->getId() << " disconnected." << std::endl;

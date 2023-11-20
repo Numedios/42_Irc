@@ -97,7 +97,7 @@ public:
         while (channelsWhereClientIs.size() > 0)
         {
             std::string response = client->returnPrefixe() + "PART " + channelsWhereClientIs[0]->getChannelName() + " " + reason + "\r\n";
-            channelsWhereClientIs[0]->sendMessageToAll(response, *this);
+            channelsWhereClientIs[0]->sendMessageToAllExceptOne(response, *this, *client);
             channelsWhereClientIs[0]->delUser(client);
             channelsWhereClientIs.erase(channelsWhereClientIs.begin());
         }
