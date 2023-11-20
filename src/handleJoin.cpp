@@ -5,7 +5,7 @@ void joinChannel(Channel& channel, Client& client, Serveur& serveur, std::string
     std::string response;
     std::string nameChannel = channel.getChannelName();
     
-    if (channel.getNumberClient() == channel.getMaxUsers()) // check limite client in channel (Pas test)
+    if (channel.getNumberClient() + 1 > channel.getMaxUsers()) // check limite client in channel (Pas test)
     {
         response = client.returnPrefixe() + ERR_CHANNELISFULL(client.getNick(), nameChannel) + "\r\n";
         sendResponse(client, serveur, response);

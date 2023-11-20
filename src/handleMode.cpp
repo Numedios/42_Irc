@@ -226,7 +226,11 @@ int   setLimitUser(std::vector<std::string>& args, Client& client, Serveur& serv
         std::string response = client.returnPrefixe() + ERR_INVALIDMODEPARAM(client.getNick(), client.getNick() + "@localhost" , args[1], args[2], "invalid mode parameters") + "\r\n";
         sendResponse(client, serveur, response);
         return (1);
-    } 
+    }
+    if (channel.getNumberClient() > std::atoi(args[3].c_str()))
+    {
+        return 1;
+    }
     channel.setMaxUsers(std::atoi(args[3].c_str()));
     std::string  response = client.returnPrefixe() + concatenateWords(args) + "\r\n";
     channel.sendMessageToAll(response, serveur);
