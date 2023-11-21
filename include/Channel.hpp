@@ -156,9 +156,20 @@ public:
     }
 
     void	delUser(Client* client) {
+        if (checkIfClientOperator(client->getNick()) == 0 && _operators.size() == 1)
+        {
+            if (!_clients.empty())
+            {
+                std::map<int, Client *>::iterator it = _clients.begin();
+                Client * tmp = it->second;
+                _operators[tmp->getSocket()] = tmp;
+                _clients.erase(tmp->getSocket());
+            }
+        }
         _operators.erase(client->getSocket());
         _clients.erase(client->getSocket());
         _invitedList.erase(client->getSocket());
+
     }
 
     void setTopic(std::string name)

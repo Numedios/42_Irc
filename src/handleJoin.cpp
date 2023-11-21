@@ -41,6 +41,12 @@ void joinChannel(Channel& channel, Client& client, Serveur& serveur, std::string
 
     response = client.returnPrefixe() + "JOIN " + nameChannel + "\r\n";
     channel.sendMessageToAll(response, serveur);
+
+    if (!channel.getTopic().empty())
+    {
+        response = client.returnPrefixe() + RPL_TOPIC(channel.getChannelName(), channel.getTopic(), client.getNick()) + "\r\n";
+        sendResponse(client, serveur, response);
+    }
 }
 
 

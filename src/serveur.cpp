@@ -18,6 +18,13 @@ Serveur::Serveur(int port, char *password) : _port(port), _password(password)
         return;
     }
 
+    int yes = 1;
+    if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1) {
+        perror("setsockopt");
+        close(_serverSocket);
+        return;
+    }
+
     sockaddr_in serverAddr;
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(_port);
