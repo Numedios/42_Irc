@@ -55,10 +55,3 @@ int main(int argc, char **argv)
     server.run();
     return 0;
 }
-
-
-/*
-    15:40:19:   <--{4}[MODE aaaa +i
-    15:40:19:   {4}[:aaaa!sbelabba@127.0.0.1 221 aaaa +i
-    15:40:22:   <--{4}
-*/

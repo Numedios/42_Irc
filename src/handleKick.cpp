@@ -126,14 +126,21 @@ int handleKick(const std::string& line, Client& client, Serveur& serveur)
 	// check autoban
     if (client.getNick() == userkick) // 6 check si c'est un autoban 
     { 
-        std::string response = client.returnPrefixe() + ERR_NICKNAMEINUSE(client.getNick()) + "\r\n";
-        sendResponse(client, serveur, response);
-        return (1);
+        if (channel.checkIfClientOperator(client.getNick()) == 0 && channel.getOperators().size() == 1)
+        {
+            if (!channel.getClients().empty())
+            {
+                std::map<int, Client *>::iterator it = channel.getClients().begin();
+                Client * tmp = it->second;
+                channel.setOperator(tmp);
+                channel.delClient(tmp);
+            }
+        }
     }
 
     if (channel.checkIfClientInChannel(userkick) == 0) // 7
     {
-        response = serveur.getClient(userkick)->returnPrefixe() + "PART " + channel.getChannelName() + " " + channel.getChannelName() + " :kicked" +  "\r\n";
+        response = serveur.getClient(userkick)->returnPrefixe() + "PART " + " " + channel.getChannelName() + " :kicked" +  "\r\n";
         channel.sendMessageToAll(response, serveur);
         send(serveur.getClient(userkick)->getSocket(), response.c_str(), response.length(), 0);
         serveur.addHistoryChat(response);

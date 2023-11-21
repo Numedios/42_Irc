@@ -327,12 +327,21 @@ int handleMode(const std::string& line, Client& client, Serveur& serveur)
     if (args[1][0] == '#' && args.size() > 2) {
         std::string channelStr = args[1];
         Channel* channel = serveur.getChannel(channelStr);
+
+        if (channel->checkIfClientInChannel(client.getNick()) == 1) // check si le client qui invite et dans le channel
+        {
+            std::string response = client.returnPrefixe() + ERR_NOTONCHANNEL(channelStr)+ "\r\n";
+            sendResponse(client, serveur, response);
+            return 1;
+        }
+
         if (channel->checkIfClientOperator(client.getNick()))
         {
             response = client.returnPrefixe() + ERR_CHANOPRIVSNEEDED(channelStr) + "\r\n";
             sendResponse(client, serveur, response);
             return 1;
         }
+
         if (args[2][0] == '+' || args[2][0] == '-')
         {
             if (findMode(&client, args, serveur, *channel) == 1)
@@ -351,40 +360,3 @@ int handleMode(const std::string& line, Client& client, Serveur& serveur)
     sendResponse(client, serveur, response);
     return (0);
 }
-
-/*
-
-    check472 dans le code et faire en sorte de mettre les erreurs quand les mode sont invalide
-
-
-    <-- Received = MODE #lol b
-
-    --> send2 = :cricri!sbelabba@127.0.0.1 367 cricri #lol  127.0.0.1 1699882674
-
-    --> send2 = :cricri!sbelabba@127.0.0.1 368 cricri #lol:End of channel ban list
-
-
-    <-- Received = MODE #lol +it
-
-    --> DEBUG MODE : pars 4 = ><
-    --> send = :cricri!sbelabba@127.0.0.1 MODE #lol +i 
-    --> send = :cricri!sbelabba@127.0.0.1 MODE #lol +t 
-
-    <-- Received = MODE #lol +io
-
-    --> sendReply = :cricri!sbelabba@127.0.0.1 696 cricri  cricri@localhost #lol +io  :mode parameter needed
-    --> sendReply = :cricri!sbelabba@127.0.0.1 696 cricri  cricri@localhost #lol +io  :invalid number of mode parameters
-
-
-    <-- Received = MODE #lol +o
-
-    --> sendReply = :cricri!sbelabba@127.0.0.1 696 cricri  cricri@localhost #lol +o  :mode parameter needed
-    --> sendReply = :cricri!sbelabba@127.0.0.1 696 cricri  cricri@localhost #lol +o  :invalid number of mode parameters
-
-
-    <-- Received = MODE #lol +i
-
-    --> send = :cricri!sbelabba@127.0.0.1 MODE #lol +i 
-
-
-*/

@@ -31,18 +31,6 @@ public:
     int  isOperator(Client *client);
     void sendMessageToAll(std::string response,  Serveur& serveur);
     void sendMessageToAllExceptOne(std::string response,  Serveur& serveur,Client& user);
-    //void fillModesMap();
-    //int  findMode(Client *client, const std::string &arg, const std::string &line, Serveur& serveur);
-    // void setInvitation(Client *client, std::string const& line);
-    // void removeInvitation(Client *client, std::string const& line );
-    // void setKeyPass(Client *client, std::string const& pass);
-    // void removeKeyPass(Client *client, std::string const& pass);
-    // void addOperator(Client *client, std::string const& line);
-    // void removeOperator(Client *client, std::string const& line);
-    // void setLimitUser(Client *client, std::string const& limit);
-    // void removeLimitUser(Client *client, std::string const& line);
-    // void removeTopicProtection(Client *client, const std::string& line);
-    // void setTopicProtection(Client *client, const std::string& line);
 
     Client * getClient(std::string client)
     {
@@ -207,7 +195,7 @@ public:
         return _key;
     }
 
-    std::map<int, Client *> getClients(){
+    std::map<int, Client *>& getClients(){
         return _clients;
     }
 

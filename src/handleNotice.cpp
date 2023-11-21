@@ -57,12 +57,3 @@ int handleNotice(const std::string& line, Client& client, Serveur& serveur)
     sendResponse(*targetClient, serveur, response);
     return (0);
 }
-
-/*
-
-
-
-
-10:35:55:-->   {4}[:sofiane!sbelabba@127.0.0.1 NOTICE sofiane :lol
-
-*/

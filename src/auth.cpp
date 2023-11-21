@@ -1,8 +1,5 @@
 #include "../include/Serveur.hpp"
-// //#include "client.cpp"
-// #include "serveur.cpp"
-// //#include "../include/Command.hpp"
-// //#include "../include/Responses.hpp"
+
 #include <sstream>
 #include <iostream>
 #include <string>

@@ -115,31 +115,3 @@ int handleJoin(const std::string& line, Client& client, Serveur& serveur)
     createChannel(nameChannel, client, serveur);
     return (0);
 }
-
-
-/*
-
---> send = :cricri!sbelabba@127.0.0.1 JOIN #lol
---> send2 = :cricri!sbelabba@127.0.0.1 329 cricri!sbelabba@127.0.0.1 #lol 1700404873
-
---> sendReply = :cricri!sbelabba@127.0.0.1 332 cricri #lol :chocapic
-
---> send2 = :cricri!sbelabba@127.0.0.1 333 cricri!sbelabba@127.0.0.1 #lol said!sbelabba@127.0.0.1 1700404873
-
---> send = :cricri!sbelabba@127.0.0.1 JOIN #lol
---> sendReply = :said!sbelabba@127.0.0.1 353 said = #lol :@said cricri 
-
---> sendReply = :said!sbelabba@127.0.0.1 366 said #lol :End of /NAMES list
-
---> sendReply = :cricri!sbelabba@127.0.0.1 353 cricri = #lol :@said cricri 
-
---> sendReply = :cricri!sbelabba@127.0.0.1 366 cricri #lol :End of /NAMES list
-
-
-15:43:57:-->   {4}[:cricri!sbelabba@127.0.0.1 353 cricri = #lol :@soso cricri 
-15:43:57:-->   {4}[:cricri!sbelabba@127.0.0.1 366 cricri #lol :End of /NAMES list
-15:43:57:-->   {4}[:cricri!sbelabba@127.0.0.1 JOIN #lol
-
-
-
-*/

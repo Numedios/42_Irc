@@ -76,20 +76,3 @@ int handlePrivmsg(const std::string& line, Client& client, Serveur& serveur)
 	}
     return (0);
 }
-
-
-/*
-
-16:41:40:   <--{4}[PRIVMSG #lol :b
-16:41:40:-->   {5}[:sofiane!sbelabba@127.0.0.1 PRIVMSG #lol :b
-16:41:42:   <--{5}[PRIVMSG #lol :b
-16:41:42:-->   {4}[:said!sbelabba@127.0.0.1 PRIVMSG #lol :b
-
-16:43:43:   <--{4}[PRIVMSG #lol :b
-16:43:43:-->   {5}[:sofiane!sbelabba@127.0.0.1 PRIVMSG #lol :b
-16:43:45:   <--{5}[PRIVMSG #lol :b
-16:43:45:-->   {4}[:said!sbelabba@127.0.0.1 PRIVMSG #lol :b
-
-
-
-*/
