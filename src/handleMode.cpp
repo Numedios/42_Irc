@@ -96,7 +96,7 @@ int   removeInvitation(std::vector<std::string>& args, Client& client, Serveur& 
 
 
 int    setKeyPass(std::vector<std::string>& args, Client& client, Serveur& serveur, Channel& channel) {
-    if (args.size() != 4) {
+    if (args.size() < 4) {
         std::string response = client.returnPrefixe() + ERR_INVALIDMODEPARAM(client.getNick(), client.getNick() + "@localhost" , args[1], args[2], "invalid number of mode parameters") + "\r\n";
         sendResponse(client, serveur, response);
         return (1);
@@ -115,7 +115,7 @@ int    setKeyPass(std::vector<std::string>& args, Client& client, Serveur& serve
 
 int    removeKeyPass(std::vector<std::string>& args, Client& client, Serveur& serveur, Channel& channel)
 {
-    if (args.size() != 3) {
+    if (args.size() < 3) {
         std::string response = client.returnPrefixe() + ERR_INVALIDMODEPARAM(client.getNick(), client.getNick() + "@localhost" , args[1], args[2], "invalid number of mode parameters") + "\r\n";
         sendResponse(client, serveur, response);
         return (1);

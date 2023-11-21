@@ -56,7 +56,7 @@ OBJ = $(addprefix $(OBJ_DIR), $(SRC:.cpp=.o))
 all : $(OBJ_DIR) $(NAME)
 
 $(NAME) : $(OBJ)
-	echo "$(YELLOW)Making CPP Exercise$(END)"
+	echo "$(YELLOW)Making IRC Exercise$(END)"
 	$(CXX) $(OBJ) -o $(NAME)
 	echo "$(GREEN)Done$(END)"
 
@@ -67,12 +67,12 @@ $(OBJ_DIR) :
 	$(MKDIR) $(OBJ_DIR)
 
 clean :
-	echo "$(PURPLE)Cleaning CPP Exercise's objects...$(END)"
+	echo "$(PURPLE)Cleaning IRC objects...$(END)"
 	$(RM)r $(OBJ_DIR)
 	echo "$(GREEN)Done$(END)"
 
 fclean : clean
-	echo "$(PURPLE)Cleaning CPP Exercise...$(END)"
+	echo "$(PURPLE)Cleaning IRC...$(END)"
 	$(RM) $(NAME)
 	echo "$(GREEN)Done$(END)"
 

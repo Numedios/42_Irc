@@ -16,6 +16,7 @@
 #include <typeinfo>
 #include <map>
 #include <sstream>
+#include <fcntl.h>
 #include "Client.hpp"
 #include "Channel.hpp"
 #include "Responses.hpp"

@@ -64,10 +64,7 @@ void Serveur::run()
     while (g_kill == false) 
     {
         int numEvents = poll(fds, _numClients, 0); // verifier le retour de numEvents
-        // if (numEvents == -1)
-        // {
-        //     std::cout << "erreur numevents" << std::endl;
-        // }
+
         if (numEvents == -1)
         {
             if (errno == EINTR) 
