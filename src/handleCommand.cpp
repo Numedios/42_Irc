@@ -35,5 +35,5 @@ void fillCommandMap(std::map<std::string, FunctionPtr>& commands)
     commands["PRIVMSG"] = handlePrivmsg;
     //commands["kill"] = handleKill; // inutile
     commands["NICK"] = handleNick;
-    commands["PART"] = handlePart;
+    //commands["PART"] = handlePart;
 }
